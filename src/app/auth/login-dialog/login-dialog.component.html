@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Please login</h1>
+<div mat-dialog-content>
+    <form [formGroup]="loginForm">
+        <table cellspacing="0">
+            <tr>
+                <td>
+                    <mat-form-field style="width:250px !important">
+                        <input matInput placeholder="Email" formControlName="inputEmail" required>
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field style="width:250px !important">
+                        <input matInput placeholder="Password" type="password" formControlName="inputPassword" required>
+                    </mat-form-field>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button type="button" (click)="onLogin()">Login</button>
+    <button mat-button (click)="onCancel()">Cancel</button>
+</div>

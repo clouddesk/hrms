@@ -1,0 +1,38 @@
+<div class="signin-content" *ngIf="!authService.isAuthenticated()">
+  <div class="login-buttons-card">
+    <button
+      (click)="loginForm()"
+      mat-raised-button
+      color="primary"
+      class="square_button"
+    >
+      <mat-icon>input</mat-icon> Login
+    </button>
+    <button
+      *ngIf="!authService.isAuthenticated()"
+      (click)="signUpForm()"
+      mat-raised-button
+      color="primary"
+      class="square_button"
+    >
+      <mat-icon>add</mat-icon> Register
+    </button>
+  </div>
+</div>
+
+<div class="signin-content" *ngIf="authService.isAuthenticated()">
+  <div class="main-buttons-card">
+    <div *ngIf="authService.isAuthenticated()">
+      <button
+        color="primary"
+        mat-raised-button
+        class="square_button"
+        *ngFor="let menuItem of menu"
+        [routerLink]="menuItem.link"
+      >
+        <mat-icon class="largeIcons">{{ menuItem.icon }}</mat-icon>
+        <div>{{ menuItem.name }}</div>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<mat-expansion-panel class="matExpansionPanel">
+  <mat-expansion-panel-header> Add Post... </mat-expansion-panel-header>
+  <form [formGroup]="newPostForm" class="htmlEditor">
+    <span class="blank-space"></span>
+    <textarea
+      name="htmlContent"
+      id="htmlContent"
+      cols="60"
+      placeholder="type text here..."
+      formControlName="htmlContent"
+      matInput
+      #autosizeEditor="cdkTextareaAutosize"
+      cdkTextareaAutosize
+    ></textarea>
+  </form>
+  <div>
+    <button
+      mat-raised-button
+      (click)="addPost()"
+      class="share-button"
+      color="primary"
+    >
+      Share
+    </button>
+  </div>
+</mat-expansion-panel>
+<div *ngFor="let post of posts">
+  <mat-card class="my-mat-card">
+    <mat-card-content>
+      <textarea
+        matInput
+        readonly
+        name="post"
+        id="post"
+        cols="60"
+        value="{{ post.description }}"
+        #autosizePost="cdkTextareaAutosize"
+        cdkTextareaAutosize
+      ></textarea>
+      <button mat-button color="warn" (click)="onDeletePost(post.id)">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

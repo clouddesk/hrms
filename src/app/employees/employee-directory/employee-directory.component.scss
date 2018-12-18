@@ -1,0 +1,27 @@
+.largeIcons {
+  font-size: 36px;
+}
+
+table {
+  width: 100%;
+}
+
+#searchField {
+  font-size: 14px;
+  width: 20%;
+  margin: 1em;
+}
+
+td,
+th {
+  width: 25%;
+}
+
+tr.employee-row:hover {
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
+input.form-filter {
+  width: 20%;
+}

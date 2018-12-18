@@ -1,0 +1,104 @@
+<mat-toolbar color="foreground">
+  <span>
+    <button mat-button color="primary" (click)="addEmployeeForm()">
+      <mat-icon class="largeIcons">add</mat-icon>
+      <div>Add Employee</div>
+    </button>
+  </span>
+  <span class="blank-space"></span>
+</mat-toolbar>
+<mat-divider></mat-divider>
+
+<div>
+  <mat-form-field id="searchField">
+    <input
+      matInput
+      (keyup)="applyFilter($event.target.value)"
+      placeholder="Enter search keyword"
+      class="form-filter"
+    />
+  </mat-form-field>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.firstName }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.lastName }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="personalId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Personal ID</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.personalId }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="birthDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Birth Date</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.birthDate }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="mobilePhone">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile Phone</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.mobilePhone }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let employee">
+          <span>
+            <button
+              mat-button
+              color="primary"
+              (click)="ViewEmployeeForm(employee.id)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-button
+              color="warn"
+              (click)="onDeleteEmployee(employee.id)"
+            >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </span>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr
+        mat-row
+        *matRowDef="let employee; columns: displayedColumns; let i = index"
+        class="employee-row"
+      ></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+  </div>
+</div>

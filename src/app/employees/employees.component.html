@@ -1,0 +1,26 @@
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">public</mat-icon>
+      <span>News</span>
+    </ng-template>
+    <app-posts></app-posts>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">people</mat-icon>
+      Employees
+    </ng-template>
+    <app-employee-directory></app-employee-directory>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">photo_album</mat-icon>
+      Gallery
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- (click)="ViewEmployeeForm(employee.id)" -->
