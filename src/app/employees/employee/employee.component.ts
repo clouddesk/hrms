@@ -72,14 +72,14 @@ export class EmployeeComponent implements OnInit {
           () => {
             this.dialogRef.close();
           },
-          err => console.log(err.message)
+          err => console.log(err.error)
         );
     } else {
       this.dataService.addNewEmployee(changedEmployee).subscribe(
         () => {
           this.dialogRef.close();
         },
-        err => console.log(err.message)
+        err => console.log(err.error)
       );
     }
     // this.dataService.uploadFile(this.selectedFile).subscribe(response => {

@@ -1,14 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  MatTableDataSource,
-  MatPaginator,
-  MatSort,
-  MatDialog
-} from '@angular/material';
+import { MatPaginator, MatSort, MatDialog, PageEvent } from '@angular/material';
 import { DataService } from 'src/app/_services/data.service';
 import { EmployeeComponent } from '../employee/employee.component';
-
-
+import { merge, of as observableOf, Subject } from 'rxjs';
+import {
+  catchError,
+  map,
+  startWith,
+  switchMap,
+  debounceTime,
+  distinctUntilChanged
+} from 'rxjs/operators';
+import { Employee } from 'src/app/models/employee';
+import { AuthService } from 'src/app/_services/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-employee-directory',
@@ -16,8 +21,8 @@ import { EmployeeComponent } from '../employee/employee.component';
   styleUrls: ['./employee-directory.component.scss']
 })
 export class EmployeeDirectoryComponent implements OnInit {
-  dataSource: MatTableDataSource<any>;
-  employees: any;
+  dataSource: DataService | null;
+  data: Employee[] = [];
 
   displayedColumns: string[] = [
     'firstName',
@@ -28,30 +33,44 @@ export class EmployeeDirectoryComponent implements OnInit {
     'actions'
   ];
 
+  resultsLength = 0;
+  isLoadingResults = true;
+  isRateLimitReached = false;
+  searchTextChanged = new Subject<string>();
+
+  search_event_log;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private dataService: DataService, public dialog: MatDialog) {}
+  constructor(
+    private dataService: DataService,
+    private http: HttpClient,
+    private authService: AuthService,
+    public dialog: MatDialog
+  ) {}
+
+  pageEvent: PageEvent;
 
   ngOnInit() {
-    this.fetchEmployees();
+    this.dataSource = new DataService(this.http, this.authService);
+
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.getEmployees();
+
+    this.searchTextChanged
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      )
+      .subscribe(res => {
+        this.getEmployees(res);
+      });
   }
 
-  fetchEmployees() {
-    this.dataService.getEmployees().subscribe(employees => {
-      this.employees = employees;
-      this.dataSource = new MatTableDataSource(this.employees);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
-  }
-
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  search($event) {
+    this.searchTextChanged.next($event.target.value);
+    this.search_event_log = $event.target.value;
   }
 
   ViewEmployeeForm(i: number) {
@@ -60,8 +79,8 @@ export class EmployeeDirectoryComponent implements OnInit {
         width: '500px',
         data: employee
       });
-      dialogRef.afterClosed().subscribe(response => {
-        this.fetchEmployees();
+      dialogRef.afterClosed().subscribe(() => {
+        this.getEmployees(this.search_event_log);
       });
     });
   }
@@ -71,14 +90,47 @@ export class EmployeeDirectoryComponent implements OnInit {
       width: '500px',
       data: null
     });
-    dialogRef.afterClosed().subscribe(response => {
-      this.fetchEmployees();
+    dialogRef.afterClosed().subscribe(() => {
+      this.getEmployees(this.search_event_log);
     });
   }
 
   onDeleteEmployee(employee_id: number) {
     this.dataService.removeEmployee(employee_id).subscribe(() => {
-      this.fetchEmployees();
+      this.getEmployees(this.search_event_log);
     });
+  }
+
+  getEmployees(terms?) {
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          const limit: string = this.paginator.pageSize
+            ? this.paginator.pageSize.toString()
+            : '10';
+          return this.dataSource.getEmployees(
+            this.sort.active,
+            this.sort.direction,
+            this.paginator.pageIndex.toString(),
+            limit,
+            terms
+          );
+        }),
+        map(data => {
+          this.isLoadingResults = false;
+          this.isRateLimitReached = false;
+          this.resultsLength = data.total_count;
+
+          return data.items;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          this.isRateLimitReached = true;
+          return observableOf([]);
+        })
+      )
+      .subscribe(data => (this.data = data));
   }
 }

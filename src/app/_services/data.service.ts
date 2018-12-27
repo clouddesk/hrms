@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
@@ -16,10 +16,29 @@ export class DataService {
 
   // ============================ EMPLOYEE SERVICES =================================
   // ================================ START =========================================
-  getEmployees(): Observable<any> {
+
+  getEmployees(
+    sort: string,
+    order: string,
+    page: string,
+    limit: string,
+    term: string,
+  ): Observable<any> {
+    const tempHttpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-auth-token': this.authService.getToken()
+      }),
+      params: new HttpParams()
+        .set('sort', sort)
+        .append('order', order)
+        .append('page', page)
+        .append('limit', limit)
+        .append('term', term)
+    };
     return this.http.get(
       'http://localhost:3000/api/employees/',
-      this.httpOptions
+      tempHttpOptions
     );
   }
 
