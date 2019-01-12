@@ -3,9 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MsFaceApiService {
   constructor(private http: HttpClient) {}
 
@@ -25,23 +23,81 @@ export class MsFaceApiService {
   private getParameters(): HttpParams {
     return new HttpParams({
       fromObject: {
-        returnFaceId: 'true',
-        returnFaceLandmarks: 'false',
-        returnFaceAttributes: 'age,gender,emotion,hair'
+        returnFaceId: 'true'
+        // returnFaceLandmarks: 'false',
+        // returnFaceAttributes: 'age,gender,emotion,hair'
       }
     });
   }
 
   public createPersonGroup(
-    personGroupId: HTMLInputElement,
-    personGroupName: HTMLInputElement
+    personGroupId: string,
+    personGroupName: string
   ): Observable<any> {
     return this.http.put(
-      `${environment.FaceAPI_person_group}/${personGroupId.value}`,
-      { name: personGroupName.value },
+      `${environment.FaceAPI_person_group}/${personGroupId}`,
+      { name: personGroupName },
       {
         headers: this.getHeader()
       }
+    );
+  }
+
+  // FIXME: this is not working, responding that permission is denied ??? WTF? CORS ??
+  public trainPersonGroup(personGroupId: string): Observable<any> {
+    return this.http.post(
+      `${environment.FaceAPI_person_group}/${personGroupId}/train`,
+      {
+        headers: this.getHeader()
+      }
+    );
+  }
+
+  public checkPersonGroupTrainingStatus(
+    personGroupId: string
+  ): Observable<any> {
+    return this.http.get(
+      `${environment.FaceAPI_person_group}/${personGroupId}/training`,
+      {
+        headers: this.getHeader()
+      }
+    );
+  }
+
+  public detectPerson(blob: Blob): Observable<any> {
+    return this.http.post(`${environment.FaceAPI_detect}`, blob, {
+      headers: this.getHeader('application/octet-stream'),
+      params: this.getParameters()
+    });
+  }
+
+  public verifyPerson(
+    faceId: string,
+    personGroupId: string,
+    personId: string
+  ): Observable<any> {
+    console.log({
+      faceId: faceId,
+      personGroupId: personGroupId,
+      personId: personId
+    });
+    return this.http.post(
+      `${environment.FaceAPI_verify}`,
+      {
+        faceId: faceId,
+        personGroupId: personGroupId,
+        personId: personId
+      },
+      {
+        headers: this.getHeader()
+      }
+    );
+  }
+
+  public deletePersonGroup(personGroupId: string): Observable<any> {
+    return this.http.delete(
+      `${environment.FaceAPI_person_group}/${personGroupId}`,
+      { headers: this.getHeader() }
     );
   }
 
@@ -53,12 +109,11 @@ export class MsFaceApiService {
 
   public addPersonToPersonGroup(
     personGroupId: string,
-    personName: HTMLInputElement
+    personName: string
   ): Observable<any> {
-    const person = personName.value;
     return this.http.post(
       `${environment.FaceAPI_person_group}/${personGroupId}/persons`,
-      { name: person },
+      { name: personName },
       {
         headers: this.getHeader()
       }
@@ -80,10 +135,12 @@ export class MsFaceApiService {
     personId: string
   ): Observable<any> {
     return this.http.post(
-      `${environment.FaceAPI_person_group}/${personGroupId}/persons/${personId}/persistedFaces`,
+      `${
+        environment.FaceAPI_person_group
+      }/${personGroupId}/persons/${personId}/persistedFaces`,
       blob,
       {
-        headers: this.getHeader('application/octet-stream'),
+        headers: this.getHeader('application/octet-stream')
         // params: this.getParameters()
       }
     );

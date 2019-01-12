@@ -14,30 +14,49 @@
   </mat-card>
   <br />
 </div>
-<br><br><br>
+<br /><br /><br />
 <div>
   <h3>Register Person Group</h3>
-  <hr>
-  <input type="text" name="personGroupId" #personGroupId>
-  <input type="text" name="personGroupName" #personGroupName>
-  <button (click)="createPersonGroup(personGroupId, personGroupName)">Create</button>
+  <hr />
+  <div>Person Group ID: <input type="text" name="personGroupId" #personGroupId /></div>
+  <div>Person Group Name: <input type="text" name="personGroupName" #personGroupName /></div>
+  <div>
+    <button (click)="createPersonGroup(personGroupId, personGroupName)">
+      Create
+    </button>
+    <button (click)="trainPersonGroup(personGroupId)">
+      Train
+    </button>
+    <button (click)="checkPersonGroupTrainingStatus(personGroupId)">
+      Check Training Status
+    </button>
+    <button (click)="deletePersonGroup(personGroupId)">
+      Delete
+    </button>
+  </div>
 </div>
-<br><br><br>
+<br /><br /><br />
 <div>
   <h3>List Person Groups</h3>
-  <hr>
+  <hr />
   <button (click)="getPersonGroups()">List</button>
 </div>
-<br><br><br>
+<br /><br /><br />
 <div>
   <h3>List Persons of Person Groups</h3>
-  <hr>
+  <hr />
   <button (click)="getPersonsOfPersonGroup()">List</button>
 </div>
-<br><br><br>
+<br /><br /><br />
 <div>
   <h3>Add Person</h3>
-  <hr>
-  <input type="text" name="personName" #personName>
+  <hr />
+  <input type="text" name="personName" #personName />
   <button (click)="takePhotoAndUploadToServer(personName)">Add Person</button>
+</div>
+<br /><br /><br />
+<div>
+  <h3>Detect Employee</h3>
+  <hr />
+  <button (click)="detectEmployee()">Detect</button>
 </div>

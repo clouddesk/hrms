@@ -41,7 +41,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.stopCamera();
   }
 
-  takePhotoAndUploadToServer(personName, employee_id = 1, personGroupId = '1') {
+  takePhotoAndUploadToServer(personName: HTMLInputElement, employee_id = 1, personGroupId = '1') {
     this.startCamera();
     this.showCameraPreview = !this.showCameraPreview;
 
@@ -64,7 +64,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
           .linkPhotoWithPerson(employee_id, file_id)
           .subscribe(() => {
             this.faceApi
-              .addPersonToPersonGroup(personGroupId, personName)
+              .addPersonToPersonGroup(personGroupId, personName.value)
               .subscribe(resultOfaddPersonToPersonGroup => {
                 this.dataService
                   .addPersonIdToEmployee(
@@ -93,6 +93,42 @@ export class AttendanceComponent implements OnInit, OnDestroy {
                   });
               });
           });
+      });
+    }, 3000);
+  }
+
+  detectEmployee(employee_id = 1, personGroupId = '1') {
+    this.startCamera();
+    this.showCameraPreview = !this.showCameraPreview;
+
+    setTimeout(() => {
+      // Get image from Camera
+      this.captureData = this.draw();
+
+      this.stopCamera();
+      this.showCameraPreview = !this.showCameraPreview;
+
+      // Create Blob data
+      this.captureData = this.captureData.replace('data:image/png;base64,', '');
+      const contentType = 'image/png';
+      const blob = this.createBlob(this.captureData, contentType);
+
+      // Push to server
+      this.faceApi.detectPerson(blob).subscribe(detected_person => {
+        const faceId = detected_person[0].faceId;
+        console.log(faceId);
+        this.dataService.getEmployee(employee_id).subscribe(employee => {
+          console.log(employee);
+          this.faceApi
+            .verifyPerson(
+              faceId,
+              personGroupId,
+              employee.personId
+            )
+            .subscribe(verification_result => {
+              console.log(verification_result);
+            });
+        });
       });
     }, 3000);
   }
@@ -176,41 +212,33 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     return blob;
   }
 
-  // private createPerson(personName, employee_id = 1, personGroupId = '1') {
-  //   this.takePhotoAndUploadToServer().subscribe(
-  //     photo_id => {
-  //       console.log(photo_id);
-  //     }
-  //   );
-  //   this.dataService
-  //     .linkPhotoWithPerson(employee_id, person_photo_id_on_server)
-  //     .subscribe(result => {
-  //       console.log(result);
-  //       this.faceApi
-  //         .addPersonToPersonGroup(personGroupId, personName)
-  //         .subscribe(createdPersonId => {
-  //           console.log('createdPersonId: ' + createdPersonId);
-  //           this.dataService
-  //             .addPersonIdToEmployee(employee_id, createdPersonId)
-  //             .subscribe(returnedPersonId => {
-  //               console.log('returnedPersonId: ' + returnedPersonId);
-  //               const blob = this.createBlob(this.captureData);
-  //               this.faceApi
-  //                 .addFaceToPerson(blob, personGroupId, createdPersonId)
-  //                 .subscribe(persistentFaceId => {
-  //                   console.log('persistentFaceId: ' + persistentFaceId);
-  //                 });
-  //             });
-  //         });
-  //     });
-  // }
-
-  private createPersonGroup(personGroupId, personGroupName) {
+  private createPersonGroup(
+    personGroupId: HTMLInputElement,
+    personGroupName: HTMLInputElement
+  ) {
     this.faceApi
-      .createPersonGroup(personGroupId, personGroupName)
+      .createPersonGroup(personGroupId.value, personGroupName.value)
       .subscribe(res => {
         console.log(res);
       });
+  }
+
+  private deletePersonGroup(personGroupId: HTMLInputElement) {
+    this.faceApi
+      .deletePersonGroup(personGroupId.value)
+      .subscribe(res => console.log(res));
+  }
+
+  private trainPersonGroup(personGroupId: HTMLInputElement) {
+    this.faceApi
+      .trainPersonGroup(personGroupId.value)
+      .subscribe(res => console.log(res));
+  }
+
+  private checkPersonGroupTrainingStatus(personGroupId: HTMLInputElement) {
+    this.faceApi
+      .checkPersonGroupTrainingStatus(personGroupId.value)
+      .subscribe(res => console.log('Status: ' + res.status));
   }
 
   private getPersonGroups() {

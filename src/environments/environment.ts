@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   subscriptionKey: 'e3d39b6740494052b6ea534de2fc8e04',
   FaceAPI_detect: `${MSCSfaceAPI_base}/detect`,
+  FaceAPI_verify: `${MSCSfaceAPI_base}/verify`,
   FaceAPI_person_group: `${MSCSfaceAPI_base}/persongroups`
 };
 /*
