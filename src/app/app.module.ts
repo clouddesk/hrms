@@ -22,6 +22,9 @@ import { SignupDialogComponent } from './auth/signup-dialog/signup-dialog.compon
 import { MenuService } from './_services/menu.service';
 import { PostsComponent } from './employees/news/posts/posts.component';
 import { EmployeeDirectoryComponent } from './employees/employee-directory/employee-directory.component';
+import { AttendanceComponent } from './attendance/attendance.component';
+import { MsFaceApiService } from './_services/ms-face-api.service';
+import { ClockComponent } from './attendance/clock/clock.component';
 
 @NgModule({
   entryComponents: [
@@ -39,7 +42,9 @@ import { EmployeeDirectoryComponent } from './employees/employee-directory/emplo
     EmployeeComponent,
     SignupDialogComponent,
     PostsComponent,
-    EmployeeDirectoryComponent
+    EmployeeDirectoryComponent,
+    AttendanceComponent,
+    ClockComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +55,7 @@ import { EmployeeDirectoryComponent } from './employees/employee-directory/emplo
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [DataService, AuthService, AuthGuard, SignUpGuard, MenuService],
+  providers: [DataService, AuthService, AuthGuard, SignUpGuard, MenuService, MsFaceApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

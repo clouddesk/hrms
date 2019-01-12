@@ -1,0 +1,43 @@
+<div class="container">
+  <app-clock></app-clock>
+  <a mat-raised-button (click)="takePhotoAndUploadToServer()"
+    ><mat-icon>input</mat-icon><span>Check-In</span></a
+  >&nbsp;&nbsp;
+  <a mat-raised-button
+    ><mat-icon>settings_power</mat-icon><span>Check-Out</span></a
+  >
+  <br />
+  <mat-card class="photo" *ngIf="showCameraPreview">
+    <video id="video" #video autoplay playsinline></video>
+    <canvas id="canvas" #canvas></canvas> <br />
+    <br />
+  </mat-card>
+  <br />
+</div>
+<br><br><br>
+<div>
+  <h3>Register Person Group</h3>
+  <hr>
+  <input type="text" name="personGroupId" #personGroupId>
+  <input type="text" name="personGroupName" #personGroupName>
+  <button (click)="createPersonGroup(personGroupId, personGroupName)">Create</button>
+</div>
+<br><br><br>
+<div>
+  <h3>List Person Groups</h3>
+  <hr>
+  <button (click)="getPersonGroups()">List</button>
+</div>
+<br><br><br>
+<div>
+  <h3>List Persons of Person Groups</h3>
+  <hr>
+  <button (click)="getPersonsOfPersonGroup()">List</button>
+</div>
+<br><br><br>
+<div>
+  <h3>Add Person</h3>
+  <hr>
+  <input type="text" name="personName" #personName>
+  <button (click)="takePhotoAndUploadToServer(personName)">Add Person</button>
+</div>
