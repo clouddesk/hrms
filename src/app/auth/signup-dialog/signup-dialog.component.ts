@@ -16,7 +16,8 @@ export class SignupDialogComponent implements OnInit {
       Validators.required,
       Validators.minLength(8)
     ]),
-    inputPasswordCheck: new FormControl(null, [Validators.required])
+    inputPasswordCheck: new FormControl(null, [Validators.required]),
+    inputCompanyId: new FormControl(null)
   });
 
   constructor(
@@ -31,7 +32,8 @@ export class SignupDialogComponent implements OnInit {
       .signupUser(
         this.signUpForm.get('inputName').value,
         this.signUpForm.get('inputEmail').value,
-        this.signUpForm.get('inputPassword').value
+        this.signUpForm.get('inputPassword').value,
+        this.signUpForm.get('inputCompanyId').value
       )
       .then(() => this.dialogRef.close())
       .catch(error => {

@@ -14,6 +14,7 @@ import {
 import { Employee } from 'src/app/models/employee';
 import { AuthService } from 'src/app/_services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
 
 @Component({
   selector: 'app-employee-directory',
@@ -45,6 +46,7 @@ export class EmployeeDirectoryComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
+    private faceApi: MsFaceApiService,
     private http: HttpClient,
     private authService: AuthService,
     public dialog: MatDialog
@@ -96,8 +98,21 @@ export class EmployeeDirectoryComponent implements OnInit {
   }
 
   onDeleteEmployee(employee_id: number) {
-    this.dataService.removeEmployee(employee_id).subscribe(() => {
-      this.getEmployees(this.search_event_log);
+    this.dataService.getEmployee(employee_id).subscribe(employee => {
+      this.dataService
+        .deleteFile(employee.employeePhotoFileId)
+        .subscribe(() => {
+          this.faceApi
+            .deletePersonFromPersonGroup(
+              employee.personGroupId,
+              employee.personId
+            )
+            .subscribe(() => {
+              this.dataService.removeEmployee(employee_id).subscribe(() => {
+                this.getEmployees(this.search_event_log);
+              });
+            });
+        });
     });
   }
 

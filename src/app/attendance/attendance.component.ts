@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { DataService } from '../_services/data.service';
 import { MsFaceApiService } from '../_services/ms-face-api.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-attendance',
@@ -41,62 +40,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.stopCamera();
   }
 
-  takePhotoAndUploadToServer(personName: HTMLInputElement, employee_id = 1, personGroupId = '1') {
-    this.startCamera();
-    this.showCameraPreview = !this.showCameraPreview;
-
-    setTimeout(() => {
-      // Get image from Camera
-      this.captureData = this.draw();
-
-      // Create Blob data
-      this.captureData = this.captureData.replace('data:image/png;base64,', '');
-      const contentType = 'image/png';
-      const blob = this.createBlob(this.captureData, contentType);
-      const formData = new FormData();
-      formData.append('file', blob);
-
-      // Push to server
-      this.dataService.uploadFile(formData).subscribe(file_id => {
-        this.stopCamera();
-        this.showCameraPreview = !this.showCameraPreview;
-        this.dataService
-          .linkPhotoWithPerson(employee_id, file_id)
-          .subscribe(() => {
-            this.faceApi
-              .addPersonToPersonGroup(personGroupId, personName.value)
-              .subscribe(resultOfaddPersonToPersonGroup => {
-                this.dataService
-                  .addPersonIdToEmployee(
-                    employee_id,
-                    resultOfaddPersonToPersonGroup.personId
-                  )
-                  .subscribe(() => {
-                    this.faceApi
-                      .addFaceToPerson(
-                        blob,
-                        personGroupId,
-                        resultOfaddPersonToPersonGroup.personId
-                      )
-                      .subscribe(resultOfaddFaceToPerson => {
-                        console.log(
-                          'persistentFaceId: ' +
-                            resultOfaddFaceToPerson.persistedFaceId
-                        );
-                        this.dataService
-                          .addPersistentFaceIdtoEmployee(
-                            employee_id,
-                            resultOfaddFaceToPerson.persistedFaceId
-                          )
-                          .subscribe();
-                      });
-                  });
-              });
-          });
-      });
-    }, 3000);
-  }
-
   detectEmployee(employee_id = 1, personGroupId = '1') {
     this.startCamera();
     this.showCameraPreview = !this.showCameraPreview;
@@ -109,26 +52,27 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       this.showCameraPreview = !this.showCameraPreview;
 
       // Create Blob data
-      this.captureData = this.captureData.replace('data:image/png;base64,', '');
-      const contentType = 'image/png';
-      const blob = this.createBlob(this.captureData, contentType);
+      const blob = this.createBlob(
+        this.captureData.replace('data:image/png;base64,', ''),
+        'image/png'
+      );
 
       // Push to server
       this.faceApi.detectPerson(blob).subscribe(detected_person => {
-        const faceId = detected_person[0].faceId;
-        console.log(faceId);
-        this.dataService.getEmployee(employee_id).subscribe(employee => {
-          console.log(employee);
-          this.faceApi
-            .verifyPerson(
-              faceId,
-              personGroupId,
-              employee.personId
-            )
-            .subscribe(verification_result => {
-              console.log(verification_result);
-            });
-        });
+        if (detected_person.length > 0) {
+          const faceId = detected_person[0].faceId;
+          console.log(faceId);
+          this.dataService.getEmployee(employee_id).subscribe(employee => {
+            console.log(employee);
+            this.faceApi
+              .verifyPerson(faceId, personGroupId, employee.personId)
+              .subscribe(verification_result => {
+                console.log(verification_result);
+              });
+          });
+        } else {
+          alert('FACE NOT DETECTED, TRY AGAIN...');
+        }
       });
     }, 3000);
   }
@@ -148,18 +92,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       });
   }
 
-  // onClickCamera() {
-  //   if (this.isCameraActive) {
-  //     this.captureData = this.draw();
-  //     this.captureData = this.captureData.replace('data:image/png;base64,', '');
-
-  //     this.stopCamera();
-  //   } else {
-  //     this.captureData = '';
-  //     this.startCamera();
-  //   }
-  // }
-
   private stopCamera() {
     console.log('stopping camera...');
 
@@ -171,10 +103,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
     this.isCameraActive = false;
   }
-
-  // isGoodToRegister = () => {
-  //   return this.captureData !== '' && this.name !== '';
-  // };
 
   private draw() {
     const WIDTH = this.videoElm.nativeElement.clientWidth;
@@ -212,6 +140,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     return blob;
   }
 
+  // TODO: This has to be moved to service
   private createPersonGroup(
     personGroupId: HTMLInputElement,
     personGroupName: HTMLInputElement
@@ -229,22 +158,26 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       .subscribe(res => console.log(res));
   }
 
+  // TODO: This is not required in this project
   private trainPersonGroup(personGroupId: HTMLInputElement) {
     this.faceApi
       .trainPersonGroup(personGroupId.value)
       .subscribe(res => console.log(res));
   }
 
+  // TODO: This is not required in this project
   private checkPersonGroupTrainingStatus(personGroupId: HTMLInputElement) {
     this.faceApi
       .checkPersonGroupTrainingStatus(personGroupId.value)
       .subscribe(res => console.log('Status: ' + res.status));
   }
 
+  // TODO: This has to be moved to service
   private getPersonGroups() {
     this.faceApi.listPersonGroups().subscribe(res => console.log(res));
   }
 
+  // TODO: This has to be moved to service
   private getPersonsOfPersonGroup() {
     const personGroupId = '1';
     this.faceApi

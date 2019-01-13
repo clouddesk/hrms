@@ -1,12 +1,26 @@
 <h1 mat-dialog-title>{{ employee ? 'Edit employee' : 'Add new employee' }}</h1>
 <div mat-dialog-content>
-  <div class="column">
-    <img
-      src="https://via.placeholder.com/150"
-      alt="Profile Picture"
-      class="img-fluid"
-    />
-    <!-- <input type="file" (change)="onFileSelected($event)"> -->
+  <div>
+      <img class="photo"
+        *ngIf="!isCameraActive"
+        [src]="
+          EmployeeimageBlobUrl && employee
+            ? EmployeeimageBlobUrl
+            : 'https://via.placeholder.com/100'
+        "
+        alt="Profile Picture"
+        (click)="takePhoto()"
+      />
+      <br />
+      <video
+        id="video"
+        #video
+        autoplay
+        playsinline
+        *ngIf="showCameraPreview"
+      ></video>
+      <canvas id="canvas" #canvas *ngIf="showCameraPreview"></canvas> <br />
+      <br />
   </div>
   <div class="column">
     <form class="example-form" [formGroup]="employeeForm">
@@ -15,6 +29,7 @@
           matInput
           placeholder="First Name:"
           formControlName="inputFirstName"
+          #inputFirstName
         />
       </mat-form-field>
       <mat-form-field class="example-full-width">
@@ -22,6 +37,7 @@
           matInput
           placeholder="Last Name:"
           formControlName="inputLastName"
+          #inputLastName
         />
       </mat-form-field>
       <mat-form-field class="example-full-width">
@@ -55,7 +71,13 @@
   <button mat-flat-button type="button" color="primary" (click)="onSave()">
     <mat-icon>save_alt</mat-icon>
   </button>
-  <button mat-flat-button type="button" color="warn" (click)="onDelete()" *ngIf="employee">
+  <button
+    mat-flat-button
+    type="button"
+    color="warn"
+    (click)="onDelete()"
+    *ngIf="employee"
+  >
     <mat-icon>delete_outline</mat-icon>
   </button>
 </div>

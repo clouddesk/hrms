@@ -1,4 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -6,6 +12,7 @@ import { Employee } from 'src/app/models/employee';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/_services/auth.service';
 import { DataService } from 'src/app/_services/data.service';
+import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
 
 @Component({
   selector: 'app-employee',
@@ -14,11 +21,25 @@ import { DataService } from 'src/app/_services/data.service';
 })
 export class EmployeeComponent implements OnInit {
   employeeForm: FormGroup;
-  // selectedFile: File = null;
+  EmployeeimageBlobUrl = null;
+
+  @ViewChild('video') videoElm: ElementRef;
+  @ViewChild('canvas') canvasElm: ElementRef;
+  showCameraPreview = false;
+  captureData: string;
+  private isCameraActive = false;
+
+  readonly medias: MediaStreamConstraints = {
+    audio: false,
+    video: {
+      facingMode: 'user'
+    }
+  };
 
   constructor(
     private authService: AuthService,
     private dataService: DataService,
+    private faceApi: MsFaceApiService,
     public dialogRef: MatDialogRef<EmployeeComponent>,
     @Inject(MAT_DIALOG_DATA) public employee: any
   ) {}
@@ -43,6 +64,7 @@ export class EmployeeComponent implements OnInit {
           Validators.required
         ])
       });
+      this.getEmployeePhoto(this.employee.id);
     } else {
       this.employeeForm = new FormGroup({
         inputFirstName: new FormControl(null, [Validators.required]),
@@ -76,24 +98,202 @@ export class EmployeeComponent implements OnInit {
         );
     } else {
       this.dataService.addNewEmployee(changedEmployee).subscribe(
-        () => {
+        employee => {
           this.dialogRef.close();
+          this.faceApi
+            .addPersonToPersonGroup(
+              employee.personGroupId,
+              employee.firstName + ' ' + employee.lastName
+            )
+            .subscribe(
+              person => {
+                this.dataService
+                  .addPersonIdToEmployee(employee.id, person.personId)
+                  .subscribe();
+              },
+              error => console.log(error)
+            );
         },
         err => console.log(err.error)
       );
     }
-    // this.dataService.uploadFile(this.selectedFile).subscribe(response => {
-    //   console.log(response);
-    // }, err => console.log(err));
   }
 
   onDelete() {
     this.dataService.removeEmployee(this.employee.id).subscribe(() => {
       this.dialogRef.close();
+      this.dataService
+        .deleteFile(this.employee.employeePhotoFileId)
+        .subscribe(() => {
+          this.faceApi
+            .deletePersonFromPersonGroup(
+              this.employee.personGroupId,
+              this.employee.personId
+            )
+            .subscribe();
+        });
     });
   }
 
-  // onFileSelected(event) {
-  //   this.selectedFile = <File>event.target.files[0];
-  // }
+  getEmployeePhoto(employee_id: number = 1) {
+    this.dataService.getEmployee(employee_id).subscribe(employee => {
+      this.dataService
+        .getFile(+employee.employeePhotoFileId)
+        .subscribe((blob: Blob) => {
+          if (blob.size > 27) {
+            this.createImageFromBlob(blob);
+          }
+        });
+    });
+  }
+
+  createImageFromBlob(image: Blob) {
+    const reader = new FileReader();
+    reader.addEventListener(
+      'load',
+      () => {
+        this.EmployeeimageBlobUrl = reader.result;
+      },
+      false
+    );
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
+
+  private startCamera() {
+    console.log('starting camera...');
+
+    window.navigator.mediaDevices
+      .getUserMedia(this.medias)
+      .then(stream => {
+        this.videoElm.nativeElement.srcObject = stream;
+        this.isCameraActive = true;
+      })
+      .catch(error => {
+        console.error(error);
+        alert(error);
+      });
+  }
+
+  private stopCamera() {
+    console.log('stopping camera...');
+
+    this.videoElm.nativeElement.pause();
+    if (this.videoElm.nativeElement.srcObject !== null) {
+      const track = this.videoElm.nativeElement.srcObject.getTracks()[0] as MediaStreamTrack;
+      track.stop();
+    }
+
+    this.isCameraActive = false;
+  }
+
+  private draw() {
+    const WIDTH = this.videoElm.nativeElement.clientWidth;
+    const HEIGHT = this.videoElm.nativeElement.clientHeight;
+
+    const ctx = this.canvasElm.nativeElement.getContext(
+      '2d'
+    ) as CanvasRenderingContext2D;
+    this.canvasElm.nativeElement.width = WIDTH;
+    this.canvasElm.nativeElement.height = HEIGHT;
+
+    return this.canvasElm.nativeElement.toDataURL(
+      ctx.drawImage(this.videoElm.nativeElement, 0, 0, WIDTH, HEIGHT)
+    );
+  }
+
+  private createBlob(imageBase64, contentType = '', sliceSize = 512) {
+    const byteCharacters = atob(imageBase64);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+
+  takePhoto() {
+    if (this.employee) {
+      const employee_id = this.employee.id;
+      const personGroupId = this.employee.personGroupId;
+      const personId = this.employee.personId;
+      const persistedFaceId = this.employee.persistedFaceId;
+      const replacePersonFace = this.EmployeeimageBlobUrl ? true : false;
+
+      console.log(
+        employee_id,
+        personGroupId,
+        personId,
+        persistedFaceId,
+        replacePersonFace
+      );
+
+      this.startCamera();
+      this.showCameraPreview = !this.showCameraPreview;
+
+      setTimeout(() => {
+        // Get image from Camera
+        this.captureData = this.draw();
+        this.stopCamera();
+        this.showCameraPreview = !this.showCameraPreview;
+
+        // Create Form Data
+        const blob = this.createBlob(
+          this.captureData.replace('data:image/png;base64,', ''),
+          'image/png'
+        );
+        const formData = new FormData();
+        formData.append('file', blob);
+
+        // Push to server
+        this.dataService.uploadFile(formData).subscribe(file_id => {
+          if (this.employee.employeePhotoFileId) {
+            // After upload of new file delete old file
+            this.dataService
+              .deleteFile(this.employee.employeePhotoFileId)
+              .subscribe();
+          }
+          // Link new file with employee
+          this.dataService
+            .linkPhotoWithPerson(employee_id, file_id)
+            .subscribe(() => {
+              // upload new file to FaceAPI
+              if (persistedFaceId) {
+                this.faceApi
+                  .deleteFaceOfAPerson(personGroupId, personId, persistedFaceId)
+                  .subscribe();
+              }
+              this.faceApi
+                .addFaceToPerson(blob, personGroupId, personId)
+                .subscribe(resultOfaddFaceToPerson => {
+                  console.log(
+                    'persistedFaceId: ' +
+                      resultOfaddFaceToPerson.persistedFaceId
+                  );
+                  this.dataService
+                    .addpersistedFaceIdtoEmployee(
+                      employee_id,
+                      resultOfaddFaceToPerson.persistedFaceId
+                    )
+                    .subscribe(() => {
+                      this.getEmployeePhoto(this.employee.id);
+                    });
+                });
+            });
+        });
+      }, 3000);
+    }
+  }
 }

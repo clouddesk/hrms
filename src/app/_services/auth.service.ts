@@ -41,12 +41,13 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  signupUser(name: string, email: string, password: string) {
+  signupUser(name: string, email: string, password: string, companyId) {
     return this.http
       .post('http://localhost:3000/api/users/', {
         name,
         email,
-        password
+        password,
+        companyId
       })
       .toPromise()
       .then(() => this.router.navigate(['/']));

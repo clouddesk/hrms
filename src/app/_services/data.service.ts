@@ -54,7 +54,7 @@ export class DataService {
     });
   }
 
-  addPersonIdToEmployee(employeeId: number, personId): Observable<any> {
+  addPersonIdToEmployee(employeeId: number, personId: string): Observable<any> {
     const url = 'http://localhost:3000/api/employees/addpersonid/' + employeeId;
     return this.http.post(
       url,
@@ -65,15 +65,26 @@ export class DataService {
     );
   }
 
-  addPersistentFaceIdtoEmployee(
-    employeeId: number,
-    persistentFaceId
-  ): Observable<any> {
-    const url =
-      'http://localhost:3000/api/employees/addpersistentfaceid/' + employeeId;
+  addPersonGroupIdToEmployee(employeeId: number, personGroupId: number): Observable<any> {
+    const url = 'http://localhost:3000/api/employees/addpersongroupid/' + employeeId;
     return this.http.post(
       url,
-      { persistentFaceId: persistentFaceId },
+      { personGroupId: personGroupId },
+      {
+        headers: this.getHeader()
+      }
+    );
+  }
+
+  addpersistedFaceIdtoEmployee(
+    employeeId: number,
+    persistedFaceId
+  ): Observable<any> {
+    const url =
+      'http://localhost:3000/api/employees/addpersistedfaceid/' + employeeId;
+    return this.http.post(
+      url,
+      { persistedFaceId: persistedFaceId },
       {
         headers: this.getHeader()
       }
@@ -140,6 +151,11 @@ export class DataService {
   getFiles(): Observable<any> {
     const url = 'http://localhost:3000/api/files/';
     return this.http.get(url, { headers: this.getHeader('application/json') });
+  }
+
+  getFile(file_id: number): Observable<any> {
+    const url = 'http://localhost:3000/api/files/' + file_id;
+    return this.http.get(url, { headers: this.getHeader(), responseType: 'blob' as 'json' });
   }
 
   uploadFile(file): Observable<any> {

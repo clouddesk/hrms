@@ -120,6 +120,18 @@ export class MsFaceApiService {
     );
   }
 
+  public deletePersonFromPersonGroup(
+    personGroupId: string,
+    personId: string
+  ): Observable<any> {
+    return this.http.delete(
+      `${environment.FaceAPI_person_group}/${personGroupId}/persons/${personId}`,
+      {
+        headers: this.getHeader()
+      }
+    );
+  }
+
   public listPersonOfPersonGroup(personGroupId: string): Observable<any> {
     return this.http.get(
       `${environment.FaceAPI_person_group}/${personGroupId}/persons`,
@@ -142,6 +154,21 @@ export class MsFaceApiService {
       {
         headers: this.getHeader('application/octet-stream')
         // params: this.getParameters()
+      }
+    );
+  }
+
+  public deleteFaceOfAPerson(
+    personGroupId: string,
+    personId: string,
+    persistedFaceId: string
+  ): Observable<any> {
+    return this.http.delete(
+      `${
+        environment.FaceAPI_person_group
+      }/${personGroupId}/persons/${personId}/persistedFaces/${persistedFaceId}`,
+      {
+        headers: this.getHeader()
       }
     );
   }
