@@ -10,7 +10,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { Employee } from 'src/app/models/employee';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/_services/auth.service';
 import { DataService } from 'src/app/_services/data.service';
 import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
 
@@ -27,7 +26,7 @@ export class EmployeeComponent implements OnInit {
   @ViewChild('canvas') canvasElm: ElementRef;
   showCameraPreview = false;
   captureData: string;
-  private isCameraActive = false;
+  isCameraActive = false;
 
   readonly medias: MediaStreamConstraints = {
     audio: false,
@@ -37,7 +36,6 @@ export class EmployeeComponent implements OnInit {
   };
 
   constructor(
-    private authService: AuthService,
     private dataService: DataService,
     private faceApi: MsFaceApiService,
     public dialogRef: MatDialogRef<EmployeeComponent>,
@@ -120,8 +118,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   onDelete() {
-    this.dataService.removeEmployee(this.employee.id).subscribe(() => {
-      this.dialogRef.close();
+    if (this.employee.employeePhotoFileId) {
       this.dataService
         .deleteFile(this.employee.employeePhotoFileId)
         .subscribe(() => {
@@ -130,9 +127,26 @@ export class EmployeeComponent implements OnInit {
               this.employee.personGroupId,
               this.employee.personId
             )
-            .subscribe();
+            .subscribe(() => {
+              this.dataService
+                .removeEmployee(this.employee.id)
+                .subscribe(() => {
+                  this.dialogRef.close();
+                });
+            });
         });
-    });
+    } else {
+      this.faceApi
+        .deletePersonFromPersonGroup(
+          this.employee.personGroupId,
+          this.employee.personId
+        )
+        .subscribe(() => {
+          this.dataService.removeEmployee(this.employee.id).subscribe(() => {
+            this.dialogRef.close();
+          });
+        });
+    }
   }
 
   getEmployeePhoto(employee_id: number = 1) {
@@ -162,8 +176,6 @@ export class EmployeeComponent implements OnInit {
   }
 
   private startCamera() {
-    console.log('starting camera...');
-
     window.navigator.mediaDevices
       .getUserMedia(this.medias)
       .then(stream => {
@@ -177,8 +189,6 @@ export class EmployeeComponent implements OnInit {
   }
 
   private stopCamera() {
-    console.log('stopping camera...');
-
     this.videoElm.nativeElement.pause();
     if (this.videoElm.nativeElement.srcObject !== null) {
       const track = this.videoElm.nativeElement.srcObject.getTracks()[0] as MediaStreamTrack;
@@ -230,15 +240,6 @@ export class EmployeeComponent implements OnInit {
       const personGroupId = this.employee.personGroupId;
       const personId = this.employee.personId;
       const persistedFaceId = this.employee.persistedFaceId;
-      const replacePersonFace = this.EmployeeimageBlobUrl ? true : false;
-
-      console.log(
-        employee_id,
-        personGroupId,
-        personId,
-        persistedFaceId,
-        replacePersonFace
-      );
 
       this.startCamera();
       this.showCameraPreview = !this.showCameraPreview;
@@ -278,10 +279,6 @@ export class EmployeeComponent implements OnInit {
               this.faceApi
                 .addFaceToPerson(blob, personGroupId, personId)
                 .subscribe(resultOfaddFaceToPerson => {
-                  console.log(
-                    'persistedFaceId: ' +
-                      resultOfaddFaceToPerson.persistedFaceId
-                  );
                   this.dataService
                     .addpersistedFaceIdtoEmployee(
                       employee_id,

@@ -1,26 +1,26 @@
 <h1 mat-dialog-title>{{ employee ? 'Edit employee' : 'Add new employee' }}</h1>
 <div mat-dialog-content>
   <div>
-      <img class="photo"
-        *ngIf="!isCameraActive"
-        [src]="
-          EmployeeimageBlobUrl && employee
-            ? EmployeeimageBlobUrl
-            : 'https://via.placeholder.com/100'
-        "
-        alt="Profile Picture"
-        (click)="takePhoto()"
-      />
-      <br />
-      <video
-        id="video"
-        #video
-        autoplay
-        playsinline
-        *ngIf="showCameraPreview"
-      ></video>
-      <canvas id="canvas" #canvas *ngIf="showCameraPreview"></canvas> <br />
-      <br />
+    <img
+      class="photo"
+      *ngIf="!isCameraActive"
+      [src]="
+        EmployeeimageBlobUrl && employee
+          ? EmployeeimageBlobUrl
+          : '/assets/images/blank.png'
+      "
+      alt="Profile Picture"
+    />
+    <br />
+    <video
+      id="video"
+      #video
+      autoplay
+      playsinline
+      *ngIf="showCameraPreview"
+    ></video>
+    <canvas id="canvas" #canvas *ngIf="showCameraPreview"></canvas> <br />
+    <br />
   </div>
   <div class="column">
     <form class="example-form" [formGroup]="employeeForm">
@@ -68,8 +68,23 @@
   </div>
 </div>
 <div mat-dialog-actions>
-  <button mat-flat-button type="button" color="primary" (click)="onSave()">
+  <button
+    mat-flat-button
+    type="button"
+    [disabled]="!employeeForm.valid"
+    color="primary"
+    (click)="onSave()"
+  >
     <mat-icon>save_alt</mat-icon>
+  </button>
+  <button
+    mat-flat-button
+    type="button"
+    [disabled]="!employeeForm.valid"
+    color="primary"
+    (click)="takePhoto()"
+  >
+    <mat-icon>camera_alt</mat-icon>
   </button>
   <button
     mat-flat-button

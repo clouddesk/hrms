@@ -99,20 +99,33 @@ export class EmployeeDirectoryComponent implements OnInit {
 
   onDeleteEmployee(employee_id: number) {
     this.dataService.getEmployee(employee_id).subscribe(employee => {
-      this.dataService
-        .deleteFile(employee.employeePhotoFileId)
-        .subscribe(() => {
-          this.faceApi
-            .deletePersonFromPersonGroup(
-              employee.personGroupId,
-              employee.personId
-            )
-            .subscribe(() => {
-              this.dataService.removeEmployee(employee_id).subscribe(() => {
-                this.getEmployees(this.search_event_log);
+      if (employee.employeePhotoFileId) {
+        this.dataService
+          .deleteFile(employee.employeePhotoFileId)
+          .subscribe(() => {
+            this.faceApi
+              .deletePersonFromPersonGroup(
+                employee.personGroupId,
+                employee.personId
+              )
+              .subscribe(() => {
+                this.dataService.removeEmployee(employee_id).subscribe(() => {
+                  this.getEmployees(this.search_event_log);
+                });
               });
+          });
+      } else {
+        this.faceApi
+          .deletePersonFromPersonGroup(
+            employee.personGroupId,
+            employee.personId
+          )
+          .subscribe(() => {
+            this.dataService.removeEmployee(employee_id).subscribe(() => {
+              this.getEmployees(this.search_event_log);
             });
-        });
+          });
+      }
     });
   }
 
