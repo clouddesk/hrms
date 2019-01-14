@@ -1,12 +1,8 @@
 <h1 mat-dialog-title>{{ employee ? 'Edit employee' : 'Add new employee' }}</h1>
 <div mat-dialog-content>
-  <div class="loading" *ngIf="isLoadingResults">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </div>
   <div>
     <img
-      class="photo"
-      *ngIf="!isCameraActive"
+      *ngIf="!showCameraPreview"
       [src]="
         EmployeeimageBlobUrl && employee
           ? EmployeeimageBlobUrl
@@ -26,6 +22,9 @@
     <br />
   </div>
   <div class="column">
+  <div class="loading" *ngIf="isLoading">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
     <form class="example-form" [formGroup]="employeeForm">
       <mat-form-field class="example-full-width">
         <input
