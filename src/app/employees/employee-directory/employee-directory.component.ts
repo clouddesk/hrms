@@ -57,7 +57,10 @@ export class EmployeeDirectoryComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new DataService(this.http, this.authService);
 
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.sort.sortChange.subscribe(
+      () => (this.paginator.pageIndex = 0),
+      err => console.log(err.error.error.code + ': ' + err.error.error.message)
+    );
     this.getEmployees();
 
     this.searchTextChanged
@@ -65,9 +68,12 @@ export class EmployeeDirectoryComponent implements OnInit {
         debounceTime(1000),
         distinctUntilChanged()
       )
-      .subscribe(res => {
-        this.getEmployees(res);
-      });
+      .subscribe(
+        res => {
+          this.getEmployees(res);
+        },
+        err => console.log(err.error.error.code + ': ' + err.error.error.message)
+      );
   }
 
   search($event) {
@@ -98,35 +104,51 @@ export class EmployeeDirectoryComponent implements OnInit {
   }
 
   onDeleteEmployee(employee_id: number) {
-    this.dataService.getEmployee(employee_id).subscribe(employee => {
-      if (employee.employeePhotoFileId) {
-        this.dataService
-          .deleteFile(employee.employeePhotoFileId)
-          .subscribe(() => {
-            this.faceApi
-              .deletePersonFromPersonGroup(
-                employee.personGroupId,
-                employee.personId
-              )
-              .subscribe(() => {
-                this.dataService.removeEmployee(employee_id).subscribe(() => {
-                  this.getEmployees(this.search_event_log);
-                });
-              });
-          });
-      } else {
-        this.faceApi
-          .deletePersonFromPersonGroup(
-            employee.personGroupId,
-            employee.personId
-          )
-          .subscribe(() => {
-            this.dataService.removeEmployee(employee_id).subscribe(() => {
-              this.getEmployees(this.search_event_log);
-            });
-          });
-      }
-    });
+    this.dataService.getEmployee(employee_id).subscribe(
+      employee => {
+        if (employee.employeePhotoFileId) {
+          this.dataService.deleteFile(employee.employeePhotoFileId).subscribe(
+            () => {
+              this.faceApi
+                .deletePersonFromPersonGroup(
+                  employee.personGroupId,
+                  employee.personId
+                )
+                .subscribe(
+                  () => {
+                    this.dataService.removeEmployee(employee_id).subscribe(
+                      () => {
+                        this.getEmployees(this.search_event_log);
+                      },
+                      err => console.log(err.error.error.code + ': ' + err.error.error.message)
+                    );
+                  },
+                  err => console.log(err.error.error.code + ': ' + err.error.error.message)
+                );
+            },
+            err => console.log(err.error.error.code + ': ' + err.error.error.message)
+          );
+        } else {
+          this.faceApi
+            .deletePersonFromPersonGroup(
+              employee.personGroupId,
+              employee.personId
+            )
+            .subscribe(
+              () => {
+                this.dataService.removeEmployee(employee_id).subscribe(
+                  () => {
+                    this.getEmployees(this.search_event_log);
+                  },
+                  err => console.log(err.error.error.code + ': ' + err.error.error.message)
+                );
+              },
+              err => console.log(err.error.error.code + ': ' + err.error.error.message)
+            );
+        }
+      },
+      err => console.log(err.error.error.code + ': ' + err.error.error.message)
+    );
   }
 
   getEmployees(terms?) {
@@ -159,6 +181,6 @@ export class EmployeeDirectoryComponent implements OnInit {
           return observableOf([]);
         })
       )
-      .subscribe(data => (this.data = data));
+      .subscribe(data => (this.data = data), err => console.log(err.error.error.code + ': ' + err.error.error.message));
   }
 }

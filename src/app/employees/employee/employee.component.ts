@@ -27,6 +27,7 @@ export class EmployeeComponent implements OnInit {
   showCameraPreview = false;
   captureData: string;
   isCameraActive = false;
+  isLoadingResults = true;
 
   readonly medias: MediaStreamConstraints = {
     audio: false,
@@ -107,9 +108,16 @@ export class EmployeeComponent implements OnInit {
               person => {
                 this.dataService
                   .addPersonIdToEmployee(employee.id, person.personId)
-                  .subscribe();
+                  .subscribe(
+                    () => {
+                    },
+                    err => console.log(err.error)
+                  );
               },
-              error => console.log(error)
+              err =>
+                console.log(
+                  err.error.error.code + ': ' + err.error.error.message
+                )
             );
         },
         err => console.log(err.error)
@@ -119,46 +127,65 @@ export class EmployeeComponent implements OnInit {
 
   onDelete() {
     if (this.employee.employeePhotoFileId) {
-      this.dataService
-        .deleteFile(this.employee.employeePhotoFileId)
-        .subscribe(() => {
+      this.dataService.deleteFile(this.employee.employeePhotoFileId).subscribe(
+        () => {
           this.faceApi
             .deletePersonFromPersonGroup(
               this.employee.personGroupId,
               this.employee.personId
             )
-            .subscribe(() => {
-              this.dataService
-                .removeEmployee(this.employee.id)
-                .subscribe(() => {
-                  this.dialogRef.close();
-                });
-            });
-        });
+            .subscribe(
+              () => {
+                this.dataService.removeEmployee(this.employee.id).subscribe(
+                  () => {
+                    this.dialogRef.close();
+                  },
+                  err => console.log(err.error)
+                );
+              },
+              err =>
+                console.log(
+                  err.error.error.code + ': ' + err.error.error.message
+                )
+            );
+        },
+        err => console.log(err.error)
+      );
     } else {
       this.faceApi
         .deletePersonFromPersonGroup(
           this.employee.personGroupId,
           this.employee.personId
         )
-        .subscribe(() => {
-          this.dataService.removeEmployee(this.employee.id).subscribe(() => {
-            this.dialogRef.close();
-          });
-        });
+        .subscribe(
+          () => {
+            this.dataService.removeEmployee(this.employee.id).subscribe(
+              () => {
+                this.dialogRef.close();
+              },
+              err => console.log(err.error)
+            );
+          },
+          err =>
+            console.log(err.error.error.code + ': ' + err.error.error.message)
+        );
     }
   }
 
-  getEmployeePhoto(employee_id: number = 1) {
-    this.dataService.getEmployee(employee_id).subscribe(employee => {
-      this.dataService
-        .getFile(+employee.employeePhotoFileId)
-        .subscribe((blob: Blob) => {
-          if (blob.size > 27) {
-            this.createImageFromBlob(blob);
-          }
-        });
-    });
+  getEmployeePhoto(employee_id: number) {
+    this.dataService.getEmployee(employee_id).subscribe(
+      employee => {
+        this.dataService.getFile(+employee.employeePhotoFileId).subscribe(
+          (blob: Blob) => {
+            if (blob.size > 27) {
+              this.createImageFromBlob(blob);
+            }
+          },
+          err => console.log(err.error)
+        );
+      },
+      err => console.log(err.error)
+    );
   }
 
   createImageFromBlob(image: Blob) {
@@ -182,10 +209,7 @@ export class EmployeeComponent implements OnInit {
         this.videoElm.nativeElement.srcObject = stream;
         this.isCameraActive = true;
       })
-      .catch(error => {
-        console.error(error);
-        alert(error);
-      });
+      .catch(err => console.log(err));
   }
 
   private stopCamera() {
@@ -237,9 +261,18 @@ export class EmployeeComponent implements OnInit {
   takePhoto() {
     if (this.employee) {
       const employee_id = this.employee.id;
+      const employeePhotoFileId = this.employee.employeePhotoFileId;
       const personGroupId = this.employee.personGroupId;
       const personId = this.employee.personId;
       const persistedFaceId = this.employee.persistedFaceId;
+
+      console.log(
+        employee_id,
+        employeePhotoFileId,
+        personGroupId,
+        personId,
+        persistedFaceId
+      );
 
       this.startCamera();
       this.showCameraPreview = !this.showCameraPreview;
@@ -258,38 +291,152 @@ export class EmployeeComponent implements OnInit {
         const formData = new FormData();
         formData.append('file', blob);
 
-        // Push to server
-        this.dataService.uploadFile(formData).subscribe(file_id => {
-          if (this.employee.employeePhotoFileId) {
-            // After upload of new file delete old file
+        // Push blob file to database
+        this.dataService.uploadFile(formData).subscribe(
+          file_id => {
+            // After upload of new file delete old file if such exists
+            if (employeePhotoFileId) {
+              this.dataService
+                .deleteFile(employeePhotoFileId)
+                .subscribe(() => {}, err => console.log(err.error));
+            }
+            // Link new file with employee
             this.dataService
-              .deleteFile(this.employee.employeePhotoFileId)
-              .subscribe();
-          }
-          // Link new file with employee
-          this.dataService
-            .linkPhotoWithPerson(employee_id, file_id)
-            .subscribe(() => {
-              // upload new file to FaceAPI
-              if (persistedFaceId) {
-                this.faceApi
-                  .deleteFaceOfAPerson(personGroupId, personId, persistedFaceId)
-                  .subscribe();
-              }
-              this.faceApi
-                .addFaceToPerson(blob, personGroupId, personId)
-                .subscribe(resultOfaddFaceToPerson => {
-                  this.dataService
-                    .addpersistedFaceIdtoEmployee(
-                      employee_id,
-                      resultOfaddFaceToPerson.persistedFaceId
-                    )
-                    .subscribe(() => {
-                      this.getEmployeePhoto(this.employee.id);
-                    });
-                });
-            });
-        });
+              .linkPhotoWithPerson(employee_id, file_id)
+              .subscribe(
+                () => {
+                  // upload new file to FaceAPI
+                  this.faceApi
+                    .addFaceToPerson(blob, personGroupId, personId)
+                    .subscribe(
+                      resultOfaddFaceToPerson => {
+                        if (persistedFaceId) {
+                          // If upload succseeded and old persisted ID exists then delete old persisted ID
+                          this.faceApi
+                            .deleteFaceOfAPerson(
+                              personGroupId,
+                              personId,
+                              persistedFaceId
+                            )
+                            .subscribe(
+                              () => {
+                                // Add new persisted ID to employee in database
+                                this.dataService
+                                  .addPersistedFaceIdtoEmployee(
+                                    employee_id,
+                                    resultOfaddFaceToPerson.persistedFaceId
+                                  )
+                                  .subscribe(
+                                    () => {
+                                      // show new photo on the screen
+                                      this.getEmployeePhoto(employee_id);
+                                    },
+                                    err => console.log(err.error)
+                                  );
+                              },
+                              err =>
+                                console.log(
+                                  err.error.error.code +
+                                    ': ' +
+                                    err.error.error.message
+                                )
+                            );
+                        } else {
+                          // Add new persisted ID to employee in database
+                          this.dataService
+                            .addPersistedFaceIdtoEmployee(
+                              employee_id,
+                              resultOfaddFaceToPerson.persistedFaceId
+                            )
+                            .subscribe(
+                              () => {
+                                // show new photo on the screen
+                                this.getEmployeePhoto(employee_id);
+                              },
+                              err => console.log(err.error)
+                            );
+                        }
+                      },
+                      err => {
+                        console.log(
+                          err.error.error.code + ': ' + err.error.error.message
+                        );
+                        if (persistedFaceId) {
+                          // Remove persisted ID from faceAPI
+                          this.faceApi
+                            .deleteFaceOfAPerson(
+                              personGroupId,
+                              personId,
+                              persistedFaceId
+                            )
+                            .subscribe(
+                              () => {
+                                // Remove persisted ID from database
+                                this.dataService
+                                  .removePersistedFaceIdFromEmployee(
+                                    employee_id
+                                  )
+                                  .subscribe(
+                                    () => {
+                                      // Remove employee photo from database
+                                      this.dataService
+                                        .deleteFile(file_id.id)
+                                        .subscribe(
+                                          () => {
+                                            // Remove id of a file from employee in database
+                                            this.dataService
+                                              .unlinkPhotoFromPerson(
+                                                employee_id
+                                              )
+                                              .subscribe(
+                                                () =>
+                                                  (this.EmployeeimageBlobUrl = null),
+                                                errorUnlikingPhotoFromPerson =>
+                                                  console.log(
+                                                    errorUnlikingPhotoFromPerson.error
+                                                  )
+                                              );
+                                          },
+                                          errorDeletingFile =>
+                                            console.log(errorDeletingFile.error)
+                                        );
+                                    },
+                                    errorRemovingPeristedFaceIdFromEmployee =>
+                                      console.log(
+                                        errorRemovingPeristedFaceIdFromEmployee.error
+                                      )
+                                  );
+                              },
+                              errorDeletingFaceOfAPerson =>
+                                console.log(
+                                  errorDeletingFaceOfAPerson.error.error.code +
+                                    ': ' +
+                                    errorDeletingFaceOfAPerson.error.error
+                                      .message
+                                )
+                            );
+                        } else {
+                          // Remove employee photo from database
+                          console.log('file_id: ' + file_id.id);
+                          this.dataService
+                            .deleteFile(file_id.id)
+                            .subscribe(() => {
+                              // Remove id of a file from employee in database
+                              this.dataService
+                                .unlinkPhotoFromPerson(employee_id)
+                                .subscribe(() => {
+                                  this.EmployeeimageBlobUrl = null;
+                                });
+                            });
+                        }
+                      }
+                    );
+                },
+                err => console.log(err.error)
+              );
+          },
+          err => console.log(err.error)
+        );
       }, 3000);
     }
   }

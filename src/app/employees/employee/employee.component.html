@@ -1,5 +1,8 @@
 <h1 mat-dialog-title>{{ employee ? 'Edit employee' : 'Add new employee' }}</h1>
 <div mat-dialog-content>
+  <div class="loading" *ngIf="isLoadingResults">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
   <div>
     <img
       class="photo"

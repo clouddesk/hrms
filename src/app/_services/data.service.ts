@@ -65,8 +65,12 @@ export class DataService {
     );
   }
 
-  addPersonGroupIdToEmployee(employeeId: number, personGroupId: number): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/addpersongroupid/' + employeeId;
+  addPersonGroupIdToEmployee(
+    employeeId: number,
+    personGroupId: number
+  ): Observable<any> {
+    const url =
+      'http://localhost:3000/api/employees/addpersongroupid/' + employeeId;
     return this.http.post(
       url,
       { personGroupId: personGroupId },
@@ -76,9 +80,9 @@ export class DataService {
     );
   }
 
-  addpersistedFaceIdtoEmployee(
+  addPersistedFaceIdtoEmployee(
     employeeId: number,
-    persistedFaceId
+    persistedFaceId: string
   ): Observable<any> {
     const url =
       'http://localhost:3000/api/employees/addpersistedfaceid/' + employeeId;
@@ -89,6 +93,14 @@ export class DataService {
         headers: this.getHeader()
       }
     );
+  }
+
+  removePersistedFaceIdFromEmployee(employeeId: number): Observable<any> {
+    const url =
+      'http://localhost:3000/api/employees/removepersistedfaceid/' + employeeId;
+    return this.http.delete(url, {
+      headers: this.getHeader()
+    });
   }
 
   editEmployee(employeeId: number, newEmployee: any): Observable<any> {
@@ -107,6 +119,14 @@ export class DataService {
         headers: this.getHeader()
       }
     );
+  }
+
+  unlinkPhotoFromPerson(employee_id: number): Observable<any> {
+    const url =
+      'http://localhost:3000/api/employees/unlinkphoto/' + employee_id;
+    return this.http.delete(url, {
+      headers: this.getHeader()
+    });
   }
 
   removeEmployee(employeeId: number): Observable<any> {
@@ -155,7 +175,10 @@ export class DataService {
 
   getFile(file_id: number): Observable<any> {
     const url = 'http://localhost:3000/api/files/' + file_id;
-    return this.http.get(url, { headers: this.getHeader(), responseType: 'blob' as 'json' });
+    return this.http.get(url, {
+      headers: this.getHeader(),
+      responseType: 'blob' as 'json'
+    });
   }
 
   uploadFile(file): Observable<any> {
