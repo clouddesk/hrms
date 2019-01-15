@@ -267,26 +267,6 @@ export class EmployeeComponent implements OnInit {
     );
   }
 
-  private createBlob(imageBase64, contentType = '', sliceSize = 512) {
-    const byteCharacters = atob(imageBase64);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: contentType });
-    return blob;
-  }
 
   async takePhoto() {
     // Start camera and show preview
@@ -309,7 +289,7 @@ export class EmployeeComponent implements OnInit {
         this.isLoading = true;
 
         // Create Form Data
-        const blob = await this.createBlob(
+        const blob = await this.dataService.createBlob(
           this.captureData.replace('data:image/png;base64,', ''),
           'image/png'
         );

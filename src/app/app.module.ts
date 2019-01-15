@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HrmsMaterialsModule } from './_materials/hrms-materials.module';
@@ -25,6 +26,8 @@ import { EmployeeDirectoryComponent } from './employees/employee-directory/emplo
 import { AttendanceComponent } from './attendance/attendance.component';
 import { MsFaceApiService } from './_services/ms-face-api.service';
 import { ClockComponent } from './attendance/clock/clock.component';
+import { AdminComponent } from './admin/admin.component';
+import { MenuComponent } from './admin/menu/menu.component';
 
 @NgModule({
   entryComponents: [
@@ -44,10 +47,13 @@ import { ClockComponent } from './attendance/clock/clock.component';
     PostsComponent,
     EmployeeDirectoryComponent,
     AttendanceComponent,
-    ClockComponent
+    ClockComponent,
+    AdminComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
+    FlexLayoutModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HrmsMaterialsModule,

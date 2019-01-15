@@ -1,28 +1,38 @@
-
 canvas {
-    display: none;
-  }
-  
-  .container {
-    text-align: center;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-top: 50px;
-  }
-  
-  .photo {
-    display: inline-block;
-    margin: 30px;
-  }
-  
-  #cameraButton {
-    font-size: small;
-  }
-  
-  #video {
-    width: 80%;
-    max-width: 480px;
-  }
-  
+  display: none;
+}
+
+.container {
+  text-align: center;
+  padding: 70px 1rem;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.photo {
+  display: inline-block;
+  margin: 30px;
+}
+
+#cameraButton {
+  font-size: small;
+}
+
+#video {
+  width: 80%;
+  max-width: 480px;
+}
+
+.largeIcons {
+  font-size: 36pt;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.employeeId {
+  text-align: center;
+  font-size: 36pt;
+}

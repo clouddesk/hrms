@@ -76,11 +76,6 @@ export class MsFaceApiService {
     personGroupId: string,
     personId: string
   ): Observable<any> {
-    console.log({
-      faceId: faceId,
-      personGroupId: personGroupId,
-      personId: personId
-    });
     return this.http.post(
       `${environment.FaceAPI_verify}`,
       {

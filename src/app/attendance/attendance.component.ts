@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { DataService } from '../_services/data.service';
 import { MsFaceApiService } from '../_services/ms-face-api.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-attendance',
@@ -16,11 +17,18 @@ import { MsFaceApiService } from '../_services/ms-face-api.service';
 export class AttendanceComponent implements OnInit, OnDestroy {
   @ViewChild('video') videoElm: ElementRef;
   @ViewChild('canvas') canvasElm: ElementRef;
+  @ViewChild('employeeId') employeeId: ElementRef;
+
   name: string;
   captureData: string;
   private isCameraActive = false;
+  verification_result = null;
 
   showCameraPreview = false;
+  showInput = true;
+
+  showWelcome = false;
+  showGoodbye = false;
 
   readonly medias: MediaStreamConstraints = {
     audio: false,
@@ -31,70 +39,119 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   constructor(
     private dataService: DataService,
-    private faceApi: MsFaceApiService
+    private faceApi: MsFaceApiService,
+    public snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {}
 
   ngOnDestroy(): void {
-    this.stopCamera();
+    if (this.isCameraActive) {
+      this.stopCamera();
+    }
   }
 
-  detectEmployee(employee_id = 1, personGroupId = '1') {
-    this.startCamera();
-    this.showCameraPreview = !this.showCameraPreview;
+  openSnackBar(message: string) {
+    this.snackBar.open(message, '', {
+      duration: 5000,
+    });
+  }
 
-    setTimeout(() => {
-      // Get image from Camera
-      this.captureData = this.draw();
 
-      this.stopCamera();
-      this.showCameraPreview = !this.showCameraPreview;
+  async detectEmployee(action: string) {
+    if (!this.employeeId.nativeElement.value || isNaN(this.employeeId.nativeElement.value)) {
+      this.openSnackBar('ID is mandatory, if you don\' know one, please ask your supervisor');
+    } else {
+      const employee_id = +this.employeeId.nativeElement.value;
+      await this.dataService.getEmployee(employee_id).subscribe(
+        employee => {
+          this.startCamera();
+          this.showCameraPreview = !this.showCameraPreview;
+          this.showInput = !this.showInput;
 
-      // Create Blob data
-      const blob = this.createBlob(
-        this.captureData.replace('data:image/png;base64,', ''),
-        'image/png'
-      );
+          setTimeout(() => {
+            // Get image from Camera
+            this.captureData = this.draw();
 
-      // Push to server
-      this.faceApi.detectPerson(blob).subscribe(detected_person => {
-        if (detected_person.length > 0) {
-          const faceId = detected_person[0].faceId;
-          console.log(faceId);
-          this.dataService.getEmployee(employee_id).subscribe(employee => {
-            console.log(employee);
-            this.faceApi
-              .verifyPerson(faceId, personGroupId, employee.personId)
-              .subscribe(verification_result => {
-                console.log(verification_result);
-              });
-          });
-        } else {
-          alert('FACE NOT DETECTED, TRY AGAIN...');
+            this.stopCamera();
+            this.showCameraPreview = !this.showCameraPreview;
+
+            // Create Blob data
+            const blob = this.dataService.createBlob(
+              this.captureData.replace('data:image/png;base64,', ''),
+              'image/png'
+            );
+
+            // Push to server
+            this.faceApi.detectPerson(blob).subscribe(
+              detected_person => {
+                if (detected_person.length > 0) {
+                  const faceId = detected_person[0].faceId;
+                  this.faceApi
+                    .verifyPerson(
+                      faceId,
+                      employee.personGroupId,
+                      employee.personId
+                    )
+                    .subscribe(
+                      verification_result => {
+                        if (
+                          verification_result.isIdentical &&
+                          verification_result.confidence >= 0.8
+                        ) {
+                          action === 'Check-In'
+                            ? this.welcome()
+                            : this.goodbye();
+                        } else {
+                          this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                        }
+                      },
+                      error => console.log(error.error.message)
+                    );
+                } else {
+                  this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                }
+              },
+              () => this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...')
+            );
+          }, 3000);
+        },
+        () => {
+          this.openSnackBar('We can\'t recognize your ID, please enter correct one and try again...');
         }
-      });
+      );
+    }
+  }
+
+  welcome() {
+    this.showWelcome = true;
+    this.showInput = false;
+    setTimeout(() => {
+      this.showWelcome = false;
+      this.showInput = true;
+    }, 3000);
+  }
+
+  goodbye() {
+    this.showGoodbye = true;
+    this.showInput = false;
+    setTimeout(() => {
+      this.showInput = true;
+      this.showGoodbye = false;
     }, 3000);
   }
 
   private startCamera() {
-    console.log('starting camera...');
-
     window.navigator.mediaDevices
       .getUserMedia(this.medias)
       .then(stream => {
         this.videoElm.nativeElement.srcObject = stream;
         this.isCameraActive = true;
       })
-      .catch(error => {
-        console.error(error);
-        alert(error);
-      });
+      .catch(err => console.log(err));
   }
 
   private stopCamera() {
-    console.log('stopping camera...');
-
     this.videoElm.nativeElement.pause();
     if (this.videoElm.nativeElement.srcObject !== null) {
       const track = this.videoElm.nativeElement.srcObject.getTracks()[0] as MediaStreamTrack;
@@ -117,71 +174,5 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     return this.canvasElm.nativeElement.toDataURL(
       ctx.drawImage(this.videoElm.nativeElement, 0, 0, WIDTH, HEIGHT)
     );
-  }
-
-  private createBlob(imageBase64, contentType = '', sliceSize = 512) {
-    const byteCharacters = atob(imageBase64);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: contentType });
-    return blob;
-  }
-
-  // TODO: This has to be moved to service
-  private createPersonGroup(
-    personGroupId: HTMLInputElement,
-    personGroupName: HTMLInputElement
-  ) {
-    this.faceApi
-      .createPersonGroup(personGroupId.value, personGroupName.value)
-      .subscribe(res => {
-        console.log(res);
-      });
-  }
-
-  private deletePersonGroup(personGroupId: HTMLInputElement) {
-    this.faceApi
-      .deletePersonGroup(personGroupId.value)
-      .subscribe(res => console.log(res));
-  }
-
-  // TODO: This is not required in this project
-  private trainPersonGroup(personGroupId: HTMLInputElement) {
-    this.faceApi
-      .trainPersonGroup(personGroupId.value)
-      .subscribe(res => console.log(res));
-  }
-
-  // TODO: This is not required in this project
-  private checkPersonGroupTrainingStatus(personGroupId: HTMLInputElement) {
-    this.faceApi
-      .checkPersonGroupTrainingStatus(personGroupId.value)
-      .subscribe(res => console.log('Status: ' + res.status));
-  }
-
-  // TODO: This has to be moved to service
-  private getPersonGroups() {
-    this.faceApi.listPersonGroups().subscribe(res => console.log(res));
-  }
-
-  // TODO: This has to be moved to service
-  private getPersonsOfPersonGroup() {
-    const personGroupId = '1';
-    this.faceApi
-      .listPersonOfPersonGroup(personGroupId)
-      .subscribe(persons => console.log(persons));
   }
 }
