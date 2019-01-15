@@ -25,8 +25,8 @@
   <div class="loading" *ngIf="isLoading">
       <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
     </div>
-    <form class="example-form" [formGroup]="employeeForm">
-      <mat-form-field class="example-full-width">
+    <form class="form" [formGroup]="employeeForm">
+      <mat-form-field class="full-width">
         <input
           matInput
           placeholder="First Name:"
@@ -34,7 +34,7 @@
           #inputFirstName
         />
       </mat-form-field>
-      <mat-form-field class="example-full-width">
+      <mat-form-field class="full-width">
         <input
           matInput
           placeholder="Last Name:"
@@ -42,14 +42,14 @@
           #inputLastName
         />
       </mat-form-field>
-      <mat-form-field class="example-full-width">
+      <mat-form-field class="full-width">
         <input
           matInput
           placeholder="Personal ID:"
           formControlName="inputPersonalId"
         />
       </mat-form-field>
-      <mat-form-field class="example-full-width">
+      <mat-form-field class="full-width">
         <input
           matInput
           [matDatepicker]="picker"
@@ -59,7 +59,7 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-      <mat-form-field class="example-full-width">
+      <mat-form-field class="full-width">
         <input
           matInput
           placeholder="Mobile Phone:"

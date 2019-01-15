@@ -104,15 +104,20 @@ export class AttendanceComponent implements OnInit, OnDestroy {
                             : this.goodbye();
                         } else {
                           this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                          this.showInput = true;
                         }
                       },
                       error => console.log(error.error.message)
                     );
                 } else {
                   this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                  this.showInput = true;
                 }
               },
-              () => this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...')
+              () => {
+                this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                this.showInput = true;
+              }
             );
           }, 3000);
         },

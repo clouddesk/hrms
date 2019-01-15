@@ -27,7 +27,8 @@ import { AttendanceComponent } from './attendance/attendance.component';
 import { MsFaceApiService } from './_services/ms-face-api.service';
 import { ClockComponent } from './attendance/clock/clock.component';
 import { AdminComponent } from './admin/admin.component';
-import { MenuComponent } from './admin/menu/menu.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { ConfigComponent } from './admin/config/config.component';
 
 @NgModule({
   entryComponents: [
@@ -49,7 +50,7 @@ import { MenuComponent } from './admin/menu/menu.component';
     AttendanceComponent,
     ClockComponent,
     AdminComponent,
-    MenuComponent
+    ConfigComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +61,7 @@ import { MenuComponent } from './admin/menu/menu.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    LayoutModule,
   ],
   providers: [DataService, AuthService, AuthGuard, SignUpGuard, MenuService, MsFaceApiService],
   bootstrap: [AppComponent]
