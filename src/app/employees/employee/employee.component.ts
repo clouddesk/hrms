@@ -45,7 +45,6 @@ export class EmployeeComponent implements OnInit {
 
   ngOnInit() {
     if (this.employee) {
-      console.log(this.employee);
       this.employeeForm = new FormGroup({
         inputFirstName: new FormControl(this.employee.firstName, [
           Validators.required
@@ -206,14 +205,16 @@ export class EmployeeComponent implements OnInit {
   getEmployeePhoto(employee_id: number) {
     this.dataService.getEmployee(employee_id).subscribe(
       employee => {
-        this.dataService.getFile(+employee.employeePhotoFileId).subscribe(
-          (blob: Blob) => {
-            if (blob.size > 27) {
-              this.createImageFromBlob(blob);
-            }
-          },
-          err => console.log(err.error)
-        );
+        if (+employee.employeePhotoFileId) {
+          this.dataService.getFile(+employee.employeePhotoFileId).subscribe(
+            (blob: Blob) => {
+              if (blob.size > 27) {
+                this.createImageFromBlob(blob);
+              }
+            },
+            err => console.log(err.error)
+          );
+        }
       },
       err => console.log(err.error)
     );

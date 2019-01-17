@@ -165,11 +165,13 @@ export class DataService {
   }
 
   getFile(file_id: number): Observable<any> {
-    const url = environment.DatabaseAPI_files + file_id;
-    return this.http.get(url, {
-      headers: this.getHeader(),
-      responseType: 'blob' as 'json'
-    });
+    if (file_id) {
+      const url = environment.DatabaseAPI_files + file_id;
+      return this.http.get(url, {
+        headers: this.getHeader(),
+        responseType: 'blob' as 'json'
+      });
+    }
   }
 
   uploadFile(file): Observable<any> {

@@ -7,7 +7,7 @@ const MSCSfaceAPI_base =
 const DBAPI = 'http://localhost:3000/api';
 
 export const employee_directory_params = {
-  employeeDirectoryDefaultPageSize: '10'
+  employeeDirectoryDefaultPageSize: '5'
 };
 
 export const environment = {

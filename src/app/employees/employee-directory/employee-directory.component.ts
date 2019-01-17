@@ -25,6 +25,7 @@ import { employee_directory_params } from '../../../environments/environment';
 export class EmployeeDirectoryComponent implements OnInit {
   dataSource: DataService | null;
   data: Employee[] = [];
+  defaultPageSize: string;
 
   displayedColumns: string[] = [
     'id',
@@ -57,6 +58,7 @@ export class EmployeeDirectoryComponent implements OnInit {
   pageEvent: PageEvent;
 
   ngOnInit() {
+    this.defaultPageSize = employee_directory_params.employeeDirectoryDefaultPageSize;
     this.dataSource = new DataService(this.http, this.authService);
 
     this.sort.sortChange.subscribe(

@@ -8,25 +8,23 @@ import { DataService } from 'src/app/_services/data.service';
 })
 export class EmployeePhotoComponent implements OnInit {
   EmployeeimageBlobUrl = null;
-  employeePhoto = null;
 
   @Input() employee;
 
-
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {}
 
   ngOnInit() {
-    this.dataService.getFile(+this.employee.employeePhotoFileId).subscribe(
-      (blob: Blob) => {
-        if (blob.size > 27) {
-          this.createImageFromBlob(blob);
-        }
-      },
-      err => console.log(err.error)
-    );
-
+    if (+this.employee.employeePhotoFileId) {
+      this.dataService.getFile(+this.employee.employeePhotoFileId).subscribe(
+        (blob: Blob) => {
+          if (blob.size > 27) {
+            this.createImageFromBlob(blob);
+          }
+        },
+        err => console.log(err.error)
+      );
+    }
   }
-
 
   createImageFromBlob(image: Blob) {
     const reader = new FileReader();
