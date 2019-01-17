@@ -166,6 +166,27 @@ export class DataService {
 
   // ================================== END =========================================
 
+  // =============================== ATTENDANCE SERVICES ==================================
+
+  createEvent(
+    eventTypeId: any,
+    position: Position,
+    employeeId: number
+  ): Observable<any> {
+    const url = 'http://localhost:3000/api/attendance/';
+    const data = {
+      eventTypeId: eventTypeId,
+      point: {
+        longitude: position.coords.longitude,
+        latitude: position.coords.latitude
+      },
+      employeeId: employeeId
+    };
+    return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  // ================================== END =========================================
+
   // =============================== FILES SERVICES ==================================
 
   getFiles(): Observable<any> {
@@ -193,7 +214,6 @@ export class DataService {
       headers: this.getHeader('application/json')
     });
   }
-
 
   createBlob(imageBase64, contentType = '', sliceSize = 512) {
     const byteCharacters = atob(imageBase64);

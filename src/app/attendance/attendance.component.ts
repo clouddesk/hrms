@@ -40,7 +40,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   constructor(
     private dataService: DataService,
     private faceApi: MsFaceApiService,
-    public snackBar: MatSnackBar,
+    public snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {}
@@ -53,14 +53,18 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   openSnackBar(message: string) {
     this.snackBar.open(message, '', {
-      duration: 5000,
+      duration: 5000
     });
   }
 
-
   async detectEmployee(action: string) {
-    if (!this.employeeId.nativeElement.value || isNaN(this.employeeId.nativeElement.value)) {
-      this.openSnackBar('ID is mandatory, if you don\' know one, please ask your supervisor');
+    if (
+      !this.employeeId.nativeElement.value ||
+      isNaN(this.employeeId.nativeElement.value)
+    ) {
+      this.openSnackBar(
+        'ID is mandatory, if you do not know one, please ask your supervisor'
+      );
     } else {
       const employee_id = +this.employeeId.nativeElement.value;
       await this.dataService.getEmployee(employee_id).subscribe(
@@ -96,48 +100,78 @@ export class AttendanceComponent implements OnInit, OnDestroy {
                     .subscribe(
                       verification_result => {
                         if (
-                          verification_result.isIdentical &&
-                          verification_result.confidence >= 0.8
+                          verification_result.isIdentical
+                          // verification_result.isIdentical &&
+                          // verification_result.confidence >= 0.8
                         ) {
                           action === 'Check-In'
-                            ? this.welcome()
-                            : this.goodbye();
+                            ? this.welcome(employee_id)
+                            : this.goodbye(employee_id);
                         } else {
-                          this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                          this.openSnackBar(
+                            employee.firstName +
+                              ', we can not recognize your face, please try again...'
+                          );
                           this.showInput = true;
                         }
                       },
                       error => console.log(error.error.message)
                     );
                 } else {
-                  this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                  this.openSnackBar(
+                    employee.firstName +
+                      ', we can not recognize your face, please try again...'
+                  );
                   this.showInput = true;
                 }
               },
               () => {
-                this.openSnackBar(employee.firstName + ', we can\'t recognize your face, please try again...');
+                this.openSnackBar(
+                  employee.firstName +
+                    ', we can not recognize your face, please try again...'
+                );
                 this.showInput = true;
               }
             );
           }, 3000);
         },
         () => {
-          this.openSnackBar('We can\'t recognize your ID, please enter correct one and try again...');
+          this.openSnackBar(
+            'We can not recognize your ID, please enter correct one and try again...'
+          );
         }
       );
     }
   }
 
-  welcome() {
+  welcome(employeeId: number) {
     this.showWelcome = true;
     this.showInput = false;
     setTimeout(() => {
       this.showWelcome = false;
       this.showInput = true;
+
+      // Geolocation API
+
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.dataService.createEvent(1, position, employeeId).subscribe();
+          },
+          err => console.log(err),
+          options
+        );
+      }
     }, 3000);
   }
 
-  goodbye() {
+  goodbye(employeeId: number) {
     this.showGoodbye = true;
     this.showInput = false;
     setTimeout(() => {
