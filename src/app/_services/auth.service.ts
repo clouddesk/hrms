@@ -2,11 +2,17 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
   private token: string;
   private helper = new JwtHelperService();
+  getUserName() {
+    if (this.token) {
+      return this.helper.decodeToken(this.token).name;
+    }
+  }
 
   checkToken(token: string) {
     if (!this.helper.isTokenExpired(token)) {
@@ -18,7 +24,7 @@ export class AuthService {
 
   loginUser(email: string, password: string) {
     return this.http
-      .post('http://localhost:3000/api/auth/', { email, password })
+      .post(environment.DatabaseAPI_auth, { email, password })
       .toPromise()
       .then(token => {
         this.token = token.toString();
@@ -43,7 +49,7 @@ export class AuthService {
 
   signupUser(name: string, email: string, password: string, companyId) {
     return this.http
-      .post('http://localhost:3000/api/users/', {
+      .post(environment.DatabaseAPI_users, {
         name,
         email,
         password,

@@ -21,7 +21,6 @@ import { HomeComponent } from './home/home.component';
 import { EmployeeComponent } from './employees/employee/employee.component';
 import { SignupDialogComponent } from './auth/signup-dialog/signup-dialog.component';
 import { MenuService } from './_services/menu.service';
-import { PostsComponent } from './employees/news/posts/posts.component';
 import { EmployeeDirectoryComponent } from './employees/employee-directory/employee-directory.component';
 import { AttendanceComponent } from './attendance/attendance.component';
 import { MsFaceApiService } from './_services/ms-face-api.service';
@@ -45,7 +44,6 @@ import { ConfigComponent } from './admin/config/config.component';
     HomeComponent,
     EmployeeComponent,
     SignupDialogComponent,
-    PostsComponent,
     EmployeeDirectoryComponent,
     AttendanceComponent,
     ClockComponent,

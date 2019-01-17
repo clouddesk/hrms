@@ -15,6 +15,7 @@ import { Employee } from 'src/app/models/employee';
 import { AuthService } from 'src/app/_services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
+import { employee_directory_params } from '../../../environments/environment';
 
 @Component({
   selector: 'app-employee-directory',
@@ -26,6 +27,8 @@ export class EmployeeDirectoryComponent implements OnInit {
   data: Employee[] = [];
 
   displayedColumns: string[] = [
+    'id',
+    'photo',
     'firstName',
     'lastName',
     'personalId',
@@ -36,7 +39,6 @@ export class EmployeeDirectoryComponent implements OnInit {
 
   resultsLength = 0;
   isLoadingResults = true;
-  isRateLimitReached = false;
   searchTextChanged = new Subject<string>();
 
   search_event_log;
@@ -159,7 +161,7 @@ export class EmployeeDirectoryComponent implements OnInit {
           this.isLoadingResults = true;
           const limit: string = this.paginator.pageSize
             ? this.paginator.pageSize.toString()
-            : '10';
+            : employee_directory_params.employeeDirectoryDefaultPageSize;
           return this.dataSource.getEmployees(
             this.sort.active,
             this.sort.direction,
@@ -170,14 +172,12 @@ export class EmployeeDirectoryComponent implements OnInit {
         }),
         map(data => {
           this.isLoadingResults = false;
-          this.isRateLimitReached = false;
           this.resultsLength = data.total_count;
 
           return data.items;
         }),
         catchError(() => {
           this.isLoadingResults = false;
-          this.isRateLimitReached = true;
           return observableOf([]);
         })
       )

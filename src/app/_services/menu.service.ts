@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 interface MenuItem {
   sequence: number;
@@ -30,7 +31,7 @@ export class MenuService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   getMenu() {
-    const url = 'http://localhost:3000/api/menu/';
+    const url = environment.DatabaseAPI_menu;
     return this.http
       .get(url, {
         headers: this.getHeader()
@@ -39,7 +40,7 @@ export class MenuService {
   }
 
   addNewMenuItem(newMenuItem: MenuItem): Observable<any> {
-    const url = 'http://localhost:3000/api/menu/';
+    const url = environment.DatabaseAPI_menu;
     return this.http
       .post(url, newMenuItem, {
         headers: this.getHeader()

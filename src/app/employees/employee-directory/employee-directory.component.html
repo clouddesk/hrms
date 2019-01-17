@@ -20,14 +20,10 @@
   </mat-form-field>
   <div class="mat-elevation-z8">
     <div
-      class="example-loading-shade"
-      *ngIf="isLoadingResults || isRateLimitReached"
+      class="loading-shade"
+      *ngIf="isLoadingResults"
     >
       <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-      <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
-        GitHub's API rate limit has been reached. It will be reset in one
-        minute.
-      </div>
     </div>
 
     <table
@@ -38,6 +34,30 @@
       matSortDisableClear
       matSortDirection="asc"
     >
+      <!-- Employee ID column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.id }}
+        </td>
+      </ng-container>
+
+      <!-- Employee ID column -->
+      <ng-container matColumnDef="photo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Photo</th>
+        <td
+          mat-cell
+          *matCellDef="let employee"
+          (click)="ViewEmployeeForm(employee.id)"
+        >
+          {{ employee.photo }}
+        </td>
+      </ng-container>
+
       <!-- First Name column -->
       <ng-container matColumnDef="firstName">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>

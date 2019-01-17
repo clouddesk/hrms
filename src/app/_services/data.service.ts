@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class DataService {
@@ -31,7 +32,7 @@ export class DataService {
     term: string
   ): Observable<any> {
     const httpOptions = {
-      headers: this.getHeader('application/json'),
+      headers: this.getHeader(),
       params: new HttpParams()
         .set('sort', sort)
         .append('order', order)
@@ -39,23 +40,23 @@ export class DataService {
         .append('limit', limit)
         .append('term', term)
     };
-    return this.http.get('http://localhost:3000/api/employees/', httpOptions);
+    return this.http.get(environment.DatabaseAPI_Employee, httpOptions);
   }
 
   getEmployee(employeeId): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/' + employeeId;
-    return this.http.get(url, { headers: this.getHeader('application/json') });
+    const url = environment.DatabaseAPI_Employee + employeeId;
+    return this.http.get(url, { headers: this.getHeader() });
   }
 
   addNewEmployee(employee: any): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/';
+    const url = environment.DatabaseAPI_Employee;
     return this.http.post(url, employee, {
-      headers: this.getHeader('application/json')
+      headers: this.getHeader()
     });
   }
 
   addPersonIdToEmployee(employeeId: number, personId: string): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/addpersonid/' + employeeId;
+    const url = environment.DatabaseAPI_Employee_addPersonId + employeeId;
     return this.http.post(
       url,
       { personId: personId },
@@ -69,8 +70,7 @@ export class DataService {
     employeeId: number,
     personGroupId: number
   ): Observable<any> {
-    const url =
-      'http://localhost:3000/api/employees/addpersongroupid/' + employeeId;
+    const url = environment.DatabaseAPI_Employee_addPersonGroupId + employeeId;
     return this.http.post(
       url,
       { personGroupId: personGroupId },
@@ -84,8 +84,7 @@ export class DataService {
     employeeId: number,
     persistedFaceId: string
   ): Observable<any> {
-    const url =
-      'http://localhost:3000/api/employees/addpersistedfaceid/' + employeeId;
+    const url = environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
     return this.http.post(
       url,
       { persistedFaceId: persistedFaceId },
@@ -96,22 +95,21 @@ export class DataService {
   }
 
   removePersistedFaceIdFromEmployee(employeeId: number): Observable<any> {
-    const url =
-      'http://localhost:3000/api/employees/removepersistedfaceid/' + employeeId;
+    const url = environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
   }
 
   editEmployee(employeeId: number, newEmployee: any): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/' + employeeId;
+    const url = environment.DatabaseAPI_Employee + employeeId;
     return this.http.post(url, newEmployee, {
-      headers: this.getHeader('application/json')
+      headers: this.getHeader()
     });
   }
 
   linkPhotoWithPerson(employee_id: number, file_id: string): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/linkphoto/' + employee_id;
+    const url =  environment.DatabaseAPI_Employee_linkPhoto + employee_id;
     return this.http.post(
       url,
       { file_id: file_id },
@@ -123,48 +121,20 @@ export class DataService {
 
   unlinkPhotoFromPerson(employee_id: number): Observable<any> {
     const url =
-      'http://localhost:3000/api/employees/unlinkphoto/' + employee_id;
+      environment.DatabaseAPI_Employee_unLinkPhoto + employee_id;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
   }
 
   removeEmployee(employeeId: number): Observable<any> {
-    const url = 'http://localhost:3000/api/employees/' + employeeId;
+    const url = environment.DatabaseAPI_Employee + employeeId;
     return this.http.delete(url, {
-      headers: this.getHeader('application/json')
+      headers: this.getHeader()
     });
   }
 
   // ================================ END ===========================================
-
-  // =============================== POST SERVICES ==================================
-
-  getPosts(): Observable<any> {
-    const url = 'http://localhost:3000/api/posts/';
-    return this.http.get(url, { headers: this.getHeader('application/json') });
-  }
-
-  addPost(newPost: any): Observable<any> {
-    const url = 'http://localhost:3000/api/posts/';
-    return this.http.post(url, newPost, {
-      headers: this.getHeader('application/json')
-    });
-  }
-
-  editPost(index: number): Observable<any> {
-    const url = 'http://localhost:3000/api/posts/' + index;
-    return this.http.post(url, { headers: this.getHeader('application/json') });
-  }
-
-  deletePost(index: number): Observable<any> {
-    const url = 'http://localhost:3000/api/posts/' + index;
-    return this.http.delete(url, {
-      headers: this.getHeader('application/json')
-    });
-  }
-
-  // ================================== END =========================================
 
   // =============================== ATTENDANCE SERVICES ==================================
 
@@ -173,7 +143,7 @@ export class DataService {
     position: Position,
     employeeId: number
   ): Observable<any> {
-    const url = 'http://localhost:3000/api/attendance/';
+    const url = environment.DatabaseAPI_attendance;
     const data = {
       eventTypeId: eventTypeId,
       point: {
@@ -190,12 +160,12 @@ export class DataService {
   // =============================== FILES SERVICES ==================================
 
   getFiles(): Observable<any> {
-    const url = 'http://localhost:3000/api/files/';
-    return this.http.get(url, { headers: this.getHeader('application/json') });
+    const url = environment.DatabaseAPI_files;
+    return this.http.get(url, { headers: this.getHeader() });
   }
 
   getFile(file_id: number): Observable<any> {
-    const url = 'http://localhost:3000/api/files/' + file_id;
+    const url = environment.DatabaseAPI_files + file_id;
     return this.http.get(url, {
       headers: this.getHeader(),
       responseType: 'blob' as 'json'
@@ -203,15 +173,14 @@ export class DataService {
   }
 
   uploadFile(file): Observable<any> {
-    const url = 'http://localhost:3000/api/files/';
+    const url = environment.DatabaseAPI_files;
     return this.http.post(url, file, { headers: this.getHeader() });
-    // return this.http.post(url, file, { headers: this.getHeader('application/octet-stream') });
   }
 
   deleteFile(index: number): Observable<any> {
-    const url = 'http://localhost:3000/api/files/' + index;
+    const url = environment.DatabaseAPI_files + index;
     return this.http.delete(url, {
-      headers: this.getHeader('application/json')
+      headers: this.getHeader()
     });
   }
 

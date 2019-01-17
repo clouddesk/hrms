@@ -14,7 +14,7 @@ table {
 
 td,
 th {
-  width: 25%;
+  width: 10%;
 }
 
 tr.employee-row:hover {
@@ -26,7 +26,7 @@ input.form-filter {
   width: 100%;
 }
 
-.example-loading-shade {
+.loading-shade {
   position: absolute;
   top: 0;
   left: 0;
@@ -39,7 +39,7 @@ input.form-filter {
   justify-content: center;
 }
 
-.example-rate-limit-reached {
+.rate-limit-reached {
   color: #980000;
   max-width: 360px;
   text-align: center;
