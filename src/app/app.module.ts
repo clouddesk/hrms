@@ -28,6 +28,7 @@ import { ClockComponent } from './attendance/clock/clock.component';
 import { AdminComponent } from './admin/admin.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ConfigComponent } from './admin/config/config.component';
+import { EmployeePhotoComponent } from './employees/employee-directory/employee-photo/employee-photo.component';
 
 @NgModule({
   entryComponents: [
@@ -49,6 +50,7 @@ import { ConfigComponent } from './admin/config/config.component';
     ClockComponent,
     AdminComponent,
     ConfigComponent,
+    EmployeePhotoComponent,
   ],
   imports: [
     BrowserModule,

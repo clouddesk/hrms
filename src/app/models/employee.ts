@@ -5,5 +5,6 @@ export class Employee {
         public personalId: string,
         public birthDate: string,
         public mobilePhone: number,
+        public employeePhotoFileId?: number,
     ) { }
 }

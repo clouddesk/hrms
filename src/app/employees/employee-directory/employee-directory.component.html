@@ -19,10 +19,7 @@
     />
   </mat-form-field>
   <div class="mat-elevation-z8">
-    <div
-      class="loading-shade"
-      *ngIf="isLoadingResults"
-    >
+    <div class="loading-shade" *ngIf="isLoadingResults">
       <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
     </div>
 
@@ -54,7 +51,7 @@
           *matCellDef="let employee"
           (click)="ViewEmployeeForm(employee.id)"
         >
-          {{ employee.photo }}
+          <app-employee-photo [employee]="employee"></app-employee-photo>
         </td>
       </ng-container>
 

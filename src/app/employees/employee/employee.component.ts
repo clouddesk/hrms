@@ -45,6 +45,7 @@ export class EmployeeComponent implements OnInit {
 
   ngOnInit() {
     if (this.employee) {
+      console.log(this.employee);
       this.employeeForm = new FormGroup({
         inputFirstName: new FormControl(this.employee.firstName, [
           Validators.required
