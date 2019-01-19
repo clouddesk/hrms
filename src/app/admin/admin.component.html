@@ -6,34 +6,18 @@
     fixedTopGap="75"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="false"
+    [opened]="true"
   >
     <mat-toolbar>Administration</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLinke="/admin">Access rights</a>
-      <!-- <a mat-list-item (click)="showConfig()">Configuration</a> -->
-      <a mat-list-item [matMenuTriggerFor]="menu">Configuration</a>
+      <!-- <a mat-list-item routerLink="company/">Company Setup</a> -->
+      <a mat-list-item routerLink="projects/">Projects Setup</a>
+      <a mat-list-item routerLink="locations/">Locations Setup</a>
+      <!-- <a mat-list-item routerLink="rights/">Rights Management</a> -->
+      <!-- <a mat-list-item routerLink="config/">Configuration</a> -->
     </mat-nav-list>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="addMenuItem()">Add new menu item</button>
-    </mat-menu>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-      >
-        <!-- *ngIf="isHandset$ | async" -->
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-      </button>
-      <!-- Additional icons can go here... -->
-    </mat-toolbar>
-    <span style="margin-left: 1rem;" *ngIf="!addNewMenuItem"
-      >Please select administration menu item...</span
-    >
-    <app-config *ngIf="addNewMenuItem"></app-config>
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

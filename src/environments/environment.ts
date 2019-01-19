@@ -5,6 +5,7 @@
 const MSCSfaceAPI_base =
   'https://westeurope.api.cognitive.microsoft.com/face/v1.0';
 const DBAPI = 'http://localhost:3000/api';
+const GoogleMapsAPI = 'https://maps.googleapis.com/maps/api/';
 
 export const employee_directory_params = {
   employeeDirectoryDefaultPageSize: '5'
@@ -13,13 +14,18 @@ export const employee_directory_params = {
 export const environment = {
   production: false,
   subscriptionKey: 'e3d39b6740494052b6ea534de2fc8e04',
+  googleMapssubscriptionKey: 'AIzaSyCPKD2tubxvBakQdgJmxX4kZDfEdwinSks',
   FaceAPI_detect: `${MSCSfaceAPI_base}/detect`,
   FaceAPI_verify: `${MSCSfaceAPI_base}/verify`,
   FaceAPI_person_group: `${MSCSfaceAPI_base}/persongroups`,
 
+  Google_Maps_API_static: `${GoogleMapsAPI}staticmap?`,
+
   DatabaseAPI_auth: `${DBAPI}/auth`,
   DatabaseAPI_users: `${DBAPI}/users`,
   DatabaseAPI_menu: `${DBAPI}/menu`,
+  DatabaseAPI_Project: `${DBAPI}/projects/`,
+  DatabaseAPI_Location: `${DBAPI}/locations/`,
   DatabaseAPI_Employee: `${DBAPI}/employees/`,
   DatabaseAPI_Employee_addPersonId: `${DBAPI}/employees/addpersonid/`,
   DatabaseAPI_Employee_addPersonGroupId: `${DBAPI}/employees/addpersongroupid/`,

@@ -1,0 +1,55 @@
+<div fxLayout="column" class="container">
+  <div fxFlex="100" fxFlexAlign="center">
+    <!--  -->
+  </div>
+  <form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
+    <div>
+      <mat-form-field>
+        <mat-hint>Item sequence</mat-hint>
+        <input formControlName="inputMenuSequence" matInput />
+        <mat-icon matSuffix>format_list_numbered</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-hint>Name of this menu item</mat-hint>
+        <input formControlName="inputMenuName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-hint>URL for this menu item</mat-hint>
+        <input formControlName="inputMenuLink" matInput />
+        <mat-icon matSuffix>link</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-hint>Icon for this menu item</mat-hint>
+        <input formControlName="inputMenuIcon" matInput />
+        <mat-icon matSuffix>sentiment_satisfied</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field id="inputMenuDescription">
+        <mat-hint>Describe menu item purpose</mat-hint>
+        <textarea formControlName="inputMenuDescription" matInput></textarea>
+        <mat-icon matSuffix>description</mat-icon>
+      </mat-form-field>
+      <br />
+      <br />
+      <mat-checkbox
+        labelPosition="before"
+        formControlName="inputMenuHasParent"
+        style="margin-right: 0.5rem"
+        >This menu item has parent?</mat-checkbox
+      >
+      <mat-form-field>
+        <mat-hint>Parent menu id number</mat-hint>
+        <input
+          formControlName="inputMenuParent"
+          matInput
+        />
+      </mat-form-field>
+    </div>
+    <br />
+    <button mat-raised-button type="submit">Submit</button> <br />
+  </form>
+</div>

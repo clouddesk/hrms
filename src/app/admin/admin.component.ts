@@ -16,12 +16,6 @@ export class AdminComponent {
       map(result => result.matches)
     );
 
-    addNewMenuItem = false;
-
   constructor(private breakpointObserver: BreakpointObserver) {}
 
-
-  addMenuItem() {
-    this.addNewMenuItem = !this.addNewMenuItem;
-  }
 }

@@ -1,0 +1,29 @@
+<div fxLayout="column" class="container">
+  <div fxFlex="100" fxFlexAlign="center"><!--  --></div>
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <div>
+      <mat-form-field>
+        <mat-hint>Project Name/Title</mat-hint>
+        <input formControlName="inputProjectName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+
+      <mat-form-field>
+        <mat-hint>Project location</mat-hint>
+        <mat-select
+          matNativeControl
+          formControlName="inputProjectLocationId"
+          name="location"
+        >
+          <mat-option *ngFor="let location of locations" [value]="location.id">
+            {{ location.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <br />
+    <button mat-raised-button type="submit">Submit</button> <br />
+    <br />
+  </form>
+</div>

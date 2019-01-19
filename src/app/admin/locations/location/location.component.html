@@ -1,0 +1,33 @@
+<h3>Enter details for new location:</h3>
+<div fxLayout="column" class="container">
+  <div fxFlex="100" fxFlexAlign="center"><!--  --></div>
+  <form [formGroup]="locationForm" (ngSubmit)="onSubmit()">
+    <div>
+      <mat-form-field>
+        <mat-hint>Location Name/Title</mat-hint>
+        <input formControlName="inputLocationName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-hint>Address of this location</mat-hint>
+        <input formControlName="inputLocationAddress" matInput />
+        <mat-icon matSuffix>link</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-hint>Longitude of this location</mat-hint>
+        <input type="number" formControlName="inputLocationPositionLongitude" matInput />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-hint>Latitude of this location</mat-hint>
+        <input type="number" formControlName="inputLocationPositionLatitude" matInput />
+        <mat-icon  (click)="getLocation()" style="cursor: pointer;" matSuffix>my_location</mat-icon>
+      </mat-form-field>
+    </div>
+    <br />
+    <button mat-raised-button type="submit">Submit</button>
+    <br>
+    <br>
+  </form>
+</div>

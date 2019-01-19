@@ -152,7 +152,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       this.showInput = true;
 
       // Geolocation API
-
       const options = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -174,9 +173,27 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   goodbye(employeeId: number) {
     this.showGoodbye = true;
     this.showInput = false;
+
     setTimeout(() => {
-      this.showInput = true;
       this.showGoodbye = false;
+      this.showInput = true;
+
+      // Geolocation API
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.dataService.createEvent(2, position, employeeId).subscribe();
+          },
+          err => console.log(err),
+          options
+        );
+      }
     }, 3000);
   }
 

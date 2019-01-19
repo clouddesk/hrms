@@ -84,7 +84,8 @@ export class DataService {
     employeeId: number,
     persistedFaceId: string
   ): Observable<any> {
-    const url = environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
+    const url =
+      environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
     return this.http.post(
       url,
       { persistedFaceId: persistedFaceId },
@@ -95,7 +96,8 @@ export class DataService {
   }
 
   removePersistedFaceIdFromEmployee(employeeId: number): Observable<any> {
-    const url = environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
+    const url =
+      environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
@@ -109,7 +111,7 @@ export class DataService {
   }
 
   linkPhotoWithPerson(employee_id: number, file_id: string): Observable<any> {
-    const url =  environment.DatabaseAPI_Employee_linkPhoto + employee_id;
+    const url = environment.DatabaseAPI_Employee_linkPhoto + employee_id;
     return this.http.post(
       url,
       { file_id: file_id },
@@ -120,8 +122,7 @@ export class DataService {
   }
 
   unlinkPhotoFromPerson(employee_id: number): Observable<any> {
-    const url =
-      environment.DatabaseAPI_Employee_unLinkPhoto + employee_id;
+    const url = environment.DatabaseAPI_Employee_unLinkPhoto + employee_id;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
@@ -146,13 +147,67 @@ export class DataService {
     const url = environment.DatabaseAPI_attendance;
     const data = {
       eventTypeId: eventTypeId,
-      point: {
+      position: {
         longitude: position.coords.longitude,
         latitude: position.coords.latitude
       },
       employeeId: employeeId
     };
     return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  // ================================== END =========================================
+  // =============================== PROJECT SERVICES ==================================
+
+  addProject(newProject: any): Observable<any> {
+    const url = environment.DatabaseAPI_Project;
+    const data = {
+      name: newProject.projectName,
+      locationId: newProject.locationId
+    };
+    return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  getProject(projectId: number): Observable<any> {
+    if (projectId) {
+      const url = environment.DatabaseAPI_Project + projectId;
+      return this.http.get(url, {
+        headers: this.getHeader()
+      });
+    }
+  }
+
+  getProjects(): Observable<any> {
+    const url = environment.DatabaseAPI_Project;
+    return this.http.get(url, { headers: this.getHeader() });
+  }
+
+  // ================================== END =========================================
+
+  // =============================== LOCATION SERVICES ==================================
+
+  addLocation(newLocation: any): Observable<any> {
+    const url = environment.DatabaseAPI_Location;
+    const data = {
+      name: newLocation.locationName,
+      address: newLocation.locationAddress,
+      position: newLocation.locationPosition
+    };
+    return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  getLocation(locationId: number): Observable<any> {
+    if (locationId) {
+      const url = environment.DatabaseAPI_Location + locationId;
+      return this.http.get(url, {
+        headers: this.getHeader()
+      });
+    }
+  }
+
+  getLocations(): Observable<any> {
+    const url = environment.DatabaseAPI_Location;
+    return this.http.get(url, { headers: this.getHeader() });
   }
 
   // ================================== END =========================================

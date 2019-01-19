@@ -1,0 +1,12 @@
+.container {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+tr.location-row:hover {
+  background: #f5f5f5;
+  cursor: pointer;
+}
