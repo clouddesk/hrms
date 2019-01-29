@@ -10,8 +10,8 @@ export class GoogleMapsApiService {
   getLocationMap(
     latitude: string,
     longitude: string,
-    zoom: string = '15',
-    size: string = '500x500',
+    zoom: string = '17',
+    size: string = '700x250',
     maptype: string = 'hybrid',
     region: string = 'ge'
   ): Observable<any> {

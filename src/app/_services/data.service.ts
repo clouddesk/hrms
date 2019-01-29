@@ -142,11 +142,13 @@ export class DataService {
   createEvent(
     eventTypeId: any,
     position: Position,
-    employeeId: number
+    employeeId: number,
+    projectId: number,
   ): Observable<any> {
     const url = environment.DatabaseAPI_attendance;
     const data = {
       eventTypeId: eventTypeId,
+      projectId: projectId,
       position: {
         longitude: position.coords.longitude,
         latitude: position.coords.latitude
@@ -154,6 +156,18 @@ export class DataService {
       employeeId: employeeId
     };
     return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  getAttendace(fromDate: any, toDate: any, projectId: number): Observable<any> {
+    const data = {
+      fromDate: fromDate,
+      toDate: toDate,
+      projectId: projectId
+    };
+    const url = environment.DatabaseAPI_report + 'attendance';
+    return this.http.post(url, data, {
+      headers: this.getHeader()
+    });
   }
 
   // ================================== END =========================================

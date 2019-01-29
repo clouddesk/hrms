@@ -22,7 +22,7 @@
     <br />
   </div>
   <div class="column">
-  <div class="loading" *ngIf="isLoading">
+    <div class="loading" *ngIf="isLoading">
       <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
     </div>
     <form class="form" [formGroup]="employeeForm">
@@ -55,6 +55,8 @@
           [matDatepicker]="picker"
           placeholder="Birth Date:"
           formControlName="inputBirthDate"
+          autocomplete="off"
+          (click)="picker.open()"
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
@@ -65,6 +67,18 @@
           placeholder="Mobile Phone:"
           formControlName="inputMobilePhone"
         />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-select
+          matNativeControl
+          formControlName="inputProjectId"
+          name="project"
+          placeholder="Project"
+        >
+          <mat-option *ngFor="let project of projects" [value]="project.id">
+            {{ project.name }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </form>
   </div>

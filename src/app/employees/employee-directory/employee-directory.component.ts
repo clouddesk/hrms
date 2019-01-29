@@ -94,6 +94,7 @@ export class EmployeeDirectoryComponent implements OnInit {
       dialogRef.afterClosed().subscribe(() => {
         this.getEmployees(this.search_event_log);
       });
+      // dialogRef.afterClosed().subscribe();
     });
   }
 

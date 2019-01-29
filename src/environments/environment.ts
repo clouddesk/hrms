@@ -34,6 +34,7 @@ export const environment = {
   DatabaseAPI_Employee_linkPhoto: `${DBAPI}/employees/linkphoto/`,
   DatabaseAPI_Employee_unLinkPhoto: `${DBAPI}/employees/unlinkphoto/`,
   DatabaseAPI_attendance: `${DBAPI}/attendance/`,
+  DatabaseAPI_report: `${DBAPI}/reports/`,
   DatabaseAPI_files: `${DBAPI}/files/`
 };
 /*

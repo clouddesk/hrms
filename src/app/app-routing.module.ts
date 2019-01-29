@@ -18,6 +18,8 @@ import { LocationComponent } from './admin/locations/location/location.component
 import { LocationsComponent } from './admin/locations/locations.component';
 import { LocationsDashboardComponent } from './admin/locations/locations-dashboard/locations-dashboard.component';
 import { ProjectsDashboardComponent } from './admin/projects/projects-dashboard/projects-dashboard.component';
+import { ReportsComponent } from './admin/reports/reports.component';
+import { AttendanceReportComponent } from './admin/reports/attendance-report/attendance-report.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -50,20 +52,35 @@ const routes: Routes = [
         path: 'rights',
         component: RightsManagementComponent
       },
-
       {
         path: 'company',
         component: CompanyComponent
       },
       {
+        path: 'reports',
+        component: ReportsComponent,
+        children: [
+          {
+            path: 'attendance',
+            component: AttendanceReportComponent
+          }
+        ]
+      },
+      {
         path: 'locations',
         component: LocationsComponent,
-        children: [{ path: 'add', component: LocationComponent }, { path: '', component: LocationsDashboardComponent }]
+        children: [
+          { path: 'add', component: LocationComponent },
+          { path: '', component: LocationsDashboardComponent }
+        ]
       },
       {
         path: 'projects',
         component: ProjectsComponent,
-        children: [{ path: 'add', component: ProjectComponent }, { path: '', component:  ProjectsDashboardComponent}]
+        children: [
+          { path: 'add', component: ProjectComponent },
+          { path: '', component: ProjectsDashboardComponent }
+        ]
       }
     ]
   },

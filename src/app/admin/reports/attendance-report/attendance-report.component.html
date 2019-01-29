@@ -1,0 +1,118 @@
+<br />
+<mat-toolbar>
+  <form class="form" [formGroup]="attendanceReportFilterForm">
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="pickerFrom"
+        placeholder="From:"
+        formControlName="inputFromDate"
+        (click)="pickerFrom.open()"
+        autocomplete="off"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="pickerFrom"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="pickerTo"
+        placeholder="To:"
+        formControlName="inputToDate"
+        autocomplete="off"
+        (click)="pickerTo.open()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTo></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select
+        placeholder="Project:"
+        matNativeControl
+        formControlName="inputProjectId"
+        name="project"
+        #projectId
+      >
+        <mat-option *ngFor="let project of projects" [value]="project.id">
+          {{ project.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <button
+    type="button"
+    (click)="getAttendanceReport(projectId)"
+    style="margin-left: 2rem"
+    mat-raised-button
+  >
+    Report
+  </button>
+</mat-toolbar>
+<div class="container">
+  <div class="loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <table
+    mat-table
+    [dataSource]="attendanceData"
+    multiTemplateDataRows
+    class="mat-elevation-z8"
+  >
+    <ng-container
+      matColumnDef="{{ column }}"
+      *ngFor="let column of displayedColumns"
+    >
+      <!-- <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th> -->
+      <th mat-header-cell *matHeaderCellDef>{{ getColumnName(column) }}</th>
+      <td mat-cell *matCellDef="let location">
+        {{
+          column !== 'eventTypeId'
+            ? column !== 'employeeId'
+              ? location[column]
+              : location.employee.firstName + ' ' + location.employee.lastName
+            : location[column] === 1
+            ? 'Checked In'
+            : 'Checked Out'
+        }}
+      </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td
+        mat-cell
+        *matCellDef="let location"
+        [attr.colspan]="displayedColumns.length"
+      >
+        <div
+          class="attendance-detail"
+          [@detailExpand]="
+            location == expandedElement ? 'expanded' : 'collapsed'
+          "
+        >
+          <div class="attendance-description">
+            <app-location-map [position]="location.position"></app-location-map>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let location; columns: displayedColumns"
+      class="attendance-row"
+      [class.expanded-row]="expandedElement === location"
+      (click)="expandedElement = expandedElement === location ? null : location"
+    ></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      class="detail-row"
+    ></tr>
+  </table>
+</div>

@@ -105,8 +105,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
                           // verification_result.confidence >= 0.8
                         ) {
                           action === 'Check-In'
-                            ? this.welcome(employee_id)
-                            : this.goodbye(employee_id);
+                            ? this.welcome(employee_id, +employee.projectId)
+                            : this.goodbye(employee_id, +employee.projectId);
                         } else {
                           this.openSnackBar(
                             employee.firstName +
@@ -144,7 +144,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }
   }
 
-  welcome(employeeId: number) {
+  welcome(employeeId: number, projectId: number) {
     this.showWelcome = true;
     this.showInput = false;
     setTimeout(() => {
@@ -161,7 +161,9 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
-            this.dataService.createEvent(1, position, employeeId).subscribe();
+            this.dataService
+              .createEvent(1, position, employeeId, projectId)
+              .subscribe();
           },
           err => console.log(err),
           options
@@ -170,7 +172,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }, 3000);
   }
 
-  goodbye(employeeId: number) {
+  goodbye(employeeId: number, projectId: number) {
     this.showGoodbye = true;
     this.showInput = false;
 
@@ -188,7 +190,9 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
-            this.dataService.createEvent(2, position, employeeId).subscribe();
+            this.dataService
+              .createEvent(2, position, employeeId, projectId)
+              .subscribe();
           },
           err => console.log(err),
           options

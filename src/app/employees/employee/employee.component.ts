@@ -22,6 +22,8 @@ export class EmployeeComponent implements OnInit {
   employeeForm: FormGroup;
   EmployeeimageBlobUrl = null;
 
+  projects = null;
+
   @ViewChild('video') videoElm: ElementRef;
   @ViewChild('canvas') canvasElm: ElementRef;
   showCameraPreview = false;
@@ -44,6 +46,7 @@ export class EmployeeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getProjects();
     if (this.employee) {
       this.employeeForm = new FormGroup({
         inputFirstName: new FormControl(this.employee.firstName, [
@@ -61,6 +64,9 @@ export class EmployeeComponent implements OnInit {
         ]),
         inputMobilePhone: new FormControl(this.employee.mobilePhone, [
           Validators.required
+        ]),
+        inputProjectId: new FormControl(this.employee.projectId, [
+          Validators.required
         ])
       });
       this.getEmployeePhoto(this.employee.id);
@@ -73,7 +79,8 @@ export class EmployeeComponent implements OnInit {
           Validators.minLength(11)
         ]),
         inputBirthDate: new FormControl(null, [Validators.required]),
-        inputMobilePhone: new FormControl(null, [Validators.required])
+        inputMobilePhone: new FormControl(null, [Validators.required]),
+        inputProjectId: new FormControl(null, [Validators.required]),
       });
     }
   }
@@ -84,7 +91,8 @@ export class EmployeeComponent implements OnInit {
       this.employeeForm.get('inputLastName').value,
       this.employeeForm.get('inputPersonalId').value,
       this.employeeForm.get('inputBirthDate').value,
-      this.employeeForm.get('inputMobilePhone').value
+      this.employeeForm.get('inputMobilePhone').value,
+      this.employeeForm.get('inputProjectId').value,
     );
     this.isLoading = true;
     if (this.employee) {
@@ -337,5 +345,12 @@ export class EmployeeComponent implements OnInit {
         );
       }
     }
+  }
+
+
+  getProjects() {
+    this.dataService.getProjects().subscribe(projects => {
+      this.projects = projects;
+    });
   }
 }

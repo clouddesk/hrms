@@ -40,6 +40,9 @@ import { LocationsComponent } from './admin/locations/locations.component';
 import { LocationComponent } from './admin/locations/location/location.component';
 import { LocationsDashboardComponent } from './admin/locations/locations-dashboard/locations-dashboard.component';
 import { ProjectsDashboardComponent } from './admin/projects/projects-dashboard/projects-dashboard.component';
+import { LocationMapComponent } from './admin/locations/locations-dashboard/location-map/location-map.component';
+import { ReportsComponent } from './admin/reports/reports.component';
+import { AttendanceReportComponent } from './admin/reports/attendance-report/attendance-report.component';
 
 @NgModule({
   entryComponents: [
@@ -72,6 +75,9 @@ import { ProjectsDashboardComponent } from './admin/projects/projects-dashboard/
     LocationComponent,
     LocationsDashboardComponent,
     ProjectsDashboardComponent,
+    LocationMapComponent,
+    ReportsComponent,
+    AttendanceReportComponent,
   ],
   imports: [
     BrowserModule,

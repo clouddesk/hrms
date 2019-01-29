@@ -13,8 +13,8 @@ export class ProjectComponent implements OnInit {
   projectForm: FormGroup;
   locations = null;
 
-  selectedValue: string;
-  selectedLocation: string;
+  // selectedValue: string;
+  // selectedLocation: string;
 
   constructor(
     private dataService: DataService,
@@ -27,7 +27,9 @@ export class ProjectComponent implements OnInit {
       projectName: this.projectForm.value.inputProjectName,
       locationId: this.projectForm.value.inputProjectLocationId
     };
-    this.dataService.addProject(newProject).subscribe();
+    this.dataService.addProject(newProject).subscribe(() => {
+      this.router.navigate(['.'], { relativeTo: this.route.parent });
+    });
   }
 
   ngOnInit() {
@@ -41,7 +43,6 @@ export class ProjectComponent implements OnInit {
   getLocations() {
     this.dataService.getLocations().subscribe(result => {
       this.locations = result;
-      console.log(_.map(result, _.partialRight(_.pick, ['id', 'name'])));
     });
   }
 }
