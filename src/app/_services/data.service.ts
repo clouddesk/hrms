@@ -182,6 +182,20 @@ export class DataService {
     return this.http.post(url, data, { headers: this.getHeader() });
   }
 
+  editProject(projectId: number, newProject: any): Observable<any> {
+    const url = environment.DatabaseAPI_Project + projectId;
+    return this.http.post(url, newProject, {
+      headers: this.getHeader()
+    });
+  }
+
+  removeProject(projectId: number): Observable<any> {
+    const url = environment.DatabaseAPI_Project + projectId;
+    return this.http.delete(url, {
+      headers: this.getHeader()
+    });
+  }
+
   getProject(projectId: number): Observable<any> {
     if (projectId) {
       const url = environment.DatabaseAPI_Project + projectId;
@@ -208,6 +222,13 @@ export class DataService {
       position: newLocation.locationPosition
     };
     return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  removeLocation(locationId: number): Observable<any> {
+    const url = environment.DatabaseAPI_Location + locationId;
+    return this.http.delete(url, {
+      headers: this.getHeader()
+    });
   }
 
   getLocation(locationId: number): Observable<any> {

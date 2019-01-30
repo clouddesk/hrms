@@ -29,7 +29,7 @@
       <mat-datepicker #pickerTo></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field  style="width: 100%;">
       <mat-select
         placeholder="Project:"
         matNativeControl
@@ -43,15 +43,15 @@
       </mat-select>
     </mat-form-field>
   </form>
-  <button
-    type="button"
-    (click)="getAttendanceReport(projectId)"
-    style="margin-left: 2rem"
-    mat-raised-button
-  >
-    Report
-  </button>
 </mat-toolbar>
+<button
+type="button"
+(click)="getAttendanceReport(projectId)"
+style="margin-left: 2rem"
+mat-raised-button
+>
+Generate Report
+</button>
 <div class="container">
   <div class="loading-shade" *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
@@ -94,7 +94,10 @@
             location == expandedElement ? 'expanded' : 'collapsed'
           "
         >
-          <div class="attendance-description">
+          <div
+            class="attendance-description"
+            *ngIf="location == expandedElement"
+          >
             <app-location-map [position]="location.position"></app-location-map>
           </div>
         </div>

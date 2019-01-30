@@ -30,7 +30,7 @@ import {
 })
 export class LocationsDashboardComponent implements OnInit {
   locations: [] = [];
-  displayedColumns = ['id', 'name', 'address'];
+  displayedColumns = ['id', 'name', 'address', 'actions'];
   dataSource: DataService | null;
 
   constructor(
@@ -42,6 +42,12 @@ export class LocationsDashboardComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new DataService(this.http, this.authService);
     this.getLocations();
+  }
+
+  removeLocation(locationId: number) {
+    this.dataService
+      .removeLocation(locationId)
+      .subscribe(() => this.getLocations(), error => console.log(error));
   }
 
   getLocations() {

@@ -10,7 +10,6 @@ import {
   transition,
   animate
 } from '@angular/animations';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attendance-report',
@@ -102,7 +101,6 @@ export class AttendanceReportComponent implements OnInit {
     } else {
       toDate.setHours(toDate.getHours() + 28);
     }
-    console.log(fromDate, toDate);
     this.dataService.getAttendace(fromDate, toDate, projectId).subscribe(
       result => {
         result.map(data => {
