@@ -10,7 +10,8 @@ import { MatDialogRef } from '@angular/material';
 })
 export class SignupDialogComponent implements OnInit {
   signUpForm: FormGroup = new FormGroup({
-    inputName: new FormControl(null, [Validators.required]),
+    inputFirstName: new FormControl(null, [Validators.required]),
+    inputLastName: new FormControl(null, [Validators.required]),
     inputEmail: new FormControl(null, [Validators.email, Validators.required]),
     inputPassword: new FormControl(null, [
       Validators.required,
@@ -30,7 +31,8 @@ export class SignupDialogComponent implements OnInit {
   onSignUp() {
     this.authService
       .signupUser(
-        this.signUpForm.get('inputName').value,
+        this.signUpForm.get('inputFirstName').value,
+        this.signUpForm.get('inputLastName').value,
         this.signUpForm.get('inputEmail').value,
         this.signUpForm.get('inputPassword').value,
         this.signUpForm.get('inputCompanyId').value

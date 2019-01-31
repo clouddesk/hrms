@@ -1,0 +1,37 @@
+<div fxLayout="column" class="container">
+  <div fxFlex="100" fxFlexAlign="center"><!--  --></div>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div>
+      <mat-form-field>
+        <mat-hint>First Name</mat-hint>
+        <input formControlName="inputFirstName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-hint>Last Name</mat-hint>
+        <input formControlName="inputLastName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+          <mat-hint>Email</mat-hint>
+          <input formControlName="inputEmail" matInput />
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+        <br />
+      <mat-form-field>
+          <mat-hint>Password</mat-hint>
+          <input type="password" formControlName="inputPassword" matInput />
+        </mat-form-field>
+      <mat-form-field>
+          <mat-hint>Repeat Password</mat-hint>
+          <input type="password" formControlName="inputPassword2" matInput />
+          <mat-icon matSuffix>lock</mat-icon>
+        </mat-form-field>
+        <br />
+    </div>
+    <br />
+    <button mat-raised-button type="submit">Submit</button> <br />
+    <br />
+  </form>
+</div>

@@ -1,0 +1,117 @@
+<div>
+  <mat-form-field id="searchField">
+    <input
+      matInput
+      (keyup)="search($event)"
+      placeholder="Enter search keyword"
+      class="form-filter"
+    />
+  </mat-form-field>
+  <div class="mat-elevation-z8 container">
+    <div class="loading-shade" *ngIf="isLoadingResults">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+
+    <table
+      mat-table
+      [dataSource]="users"
+      matSort
+      matSortActive="id"
+      matSortDisableClear
+      matSortDirection="asc"
+    >
+      <!-- User ID column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+        <td mat-cell *matCellDef="let user" (click)="ViewUserForm(user.id)">
+          {{ user.id }}
+        </td>
+      </ng-container>
+
+      <!-- First Name column -->
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+        <td
+          mat-cell
+          *matCellDef="let user"
+          (click)="ViewUserForm(user.firstName)"
+        >
+          <div *ngIf="!containsObject(user.id, userActiveForEditing)">
+            {{ user.firstName }}
+          </div>
+          <div *ngIf="containsObject(user.id, userActiveForEditing)">
+            <mat-form-field floatLabel="never">
+              <input
+                matInput
+                [value]="user.firstName"
+                [(ngModel)]="user.firstName"
+              />
+            </mat-form-field>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Last Name column -->
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+        <td
+          mat-cell
+          *matCellDef="let user"
+          (click)="ViewUserForm(user.lastName)"
+        >
+          {{ user.lastName }}
+        </td>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email address</th>
+        <td mat-cell *matCellDef="let user" (click)="ViewUserForm(user.id)">
+          {{ user.email }}
+        </td>
+      </ng-container>
+
+
+    <!-- Actions column -->
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let user">
+          <span>
+            <button
+              mat-button
+              color="primary"
+              (click)="
+                !containsObject(user.id, userActiveForEditing)
+                  ? editUser(user.id)
+                  : saveUser(user.id, user.firstName, user.lastName)
+              "
+            >
+              <mat-icon>{{
+                !containsObject(user.id, userActiveForEditing)
+                  ? 'edit'
+                  : 'save_alt'
+              }}</mat-icon>
+            </button>
+            <button mat-button color="warn" (click)="removeUser(user.id)">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </span>
+        </td>
+      </ng-container>      
+
+      <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr> -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let user; columns: displayedColumns; let i = index"
+        class="user-row"
+      ></tr>
+    </table>
+
+    <mat-paginator
+      [length]="resultsLength"
+      [pageSize]="defaultPageSize"
+      [pageSizeOptions]="[5, 10, 25, 50, 100]"
+    ></mat-paginator>
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   private token: string;
   private helper = new JwtHelperService();
+
   getUserName() {
     if (this.token) {
       return this.helper.decodeToken(this.token).name;
@@ -29,7 +30,6 @@ export class AuthService {
       .then(token => {
         this.token = token.toString();
         localStorage.setItem('currentUserToken', this.token);
-        this.router.navigate(['/']);
       });
   }
 
@@ -47,10 +47,17 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  signupUser(name: string, email: string, password: string, companyId) {
+  signupUser(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+    companyId
+  ) {
     return this.http
       .post(environment.DatabaseAPI_users, {
-        name,
+        firstName,
+        lastName,
         email,
         password,
         companyId
@@ -62,10 +69,12 @@ export class AuthService {
   isAuthenticated() {
     if (!this.token) {
       return false;
+    } else {
+      if (this.helper.isTokenExpired(this.token)) {
+        this.token = null;
+        return false;
+      }
     }
-    if (this.helper.isTokenExpired(this.token)) {
-      this.token = null;
-    }
-    return this.token != null;
+    return true;
   }
 }

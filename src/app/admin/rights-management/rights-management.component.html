@@ -8,6 +8,10 @@
   >
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
   </button>
-  <button mat-button routerLink="/admin/company">Dashboard</button>
-  <button mat-button routerLink="/admin/company">Edit Information</button>
+  <button mat-button routerLink="./users"><mat-icon>person</mat-icon> All Users</button>
+  <button mat-button routerLink="./users/add"><mat-icon>add_circle</mat-icon> New User</button>
 </mat-toolbar>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+  

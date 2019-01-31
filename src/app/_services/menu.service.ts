@@ -30,20 +30,17 @@ export class MenuService {
   }
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getMenu() {
+  getMenu(): Observable<any> {
     const url = environment.DatabaseAPI_menu;
-    return this.http
-      .get(url, {
-        headers: this.getHeader()
-      })
-      .toPromise();
+    return this.http.get(url, {
+      headers: this.getHeader()
+    });
   }
 
   addNewMenuItem(newMenuItem: MenuItem): Observable<any> {
     const url = environment.DatabaseAPI_menu;
-    return this.http
-      .post(url, newMenuItem, {
-        headers: this.getHeader()
-      });
+    return this.http.post(url, newMenuItem, {
+      headers: this.getHeader()
+    });
   }
 }

@@ -137,13 +137,56 @@ export class DataService {
 
   // ================================ END ===========================================
 
+  // =============================== USER SERVICES ==================================
+
+  getUsers(
+    sort: string,
+    order: string,
+    page: string,
+    limit: string,
+    term: string
+  ): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader(),
+      params: new HttpParams()
+        .set('sort', sort)
+        .append('order', order)
+        .append('page', page)
+        .append('limit', limit)
+        .append('term', term)
+    };
+    return this.http.get(environment.DatabaseAPI_users, httpOptions);
+  }
+
+  addNewUser(user: any): Observable<any> {
+    return this.http.post(environment.DatabaseAPI_users, user, {
+      headers: this.getHeader()
+    });
+  }
+
+  editUser(userId: number, newUser: any): Observable<any> {
+    const url = environment.DatabaseAPI_users + userId;
+    return this.http.post(url, newUser, {
+      headers: this.getHeader()
+    });
+  }
+
+
+  removeUser(userId: number): Observable<any> {
+    console.log(environment.DatabaseAPI_users + userId);
+    return this.http.delete(environment.DatabaseAPI_users + userId, {
+      headers: this.getHeader()
+    });
+  }
+
+  // ================================ END ===========================================
   // =============================== ATTENDANCE SERVICES ==================================
 
   createEvent(
     eventTypeId: any,
     position: Position,
     employeeId: number,
-    projectId: number,
+    projectId: number
   ): Observable<any> {
     const url = environment.DatabaseAPI_attendance;
     const data = {
@@ -157,6 +200,10 @@ export class DataService {
     };
     return this.http.post(url, data, { headers: this.getHeader() });
   }
+
+  // ================================ END ===========================================
+
+  // =============================== REPORT SERVICES ==================================
 
   getAttendace(fromDate: any, toDate: any, projectId: number): Observable<any> {
     const data = {

@@ -20,6 +20,10 @@ import { LocationsDashboardComponent } from './admin/locations/locations-dashboa
 import { ProjectsDashboardComponent } from './admin/projects/projects-dashboard/projects-dashboard.component';
 import { ReportsComponent } from './admin/reports/reports.component';
 import { AttendanceReportComponent } from './admin/reports/attendance-report/attendance-report.component';
+import { UserDirectoryComponent } from './admin/rights-management/user-directory/user-directory.component';
+// tslint:disable-next-line:max-line-length
+import { RightsManagementDashboardComponent } from './admin/rights-management/rights-management-dashboard/rights-management-dashboard.component';
+import { UserComponent } from './admin/rights-management/user/user.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -50,7 +54,17 @@ const routes: Routes = [
       },
       {
         path: 'rights',
-        component: RightsManagementComponent
+        component: RightsManagementComponent,
+        children: [
+          {
+            path: 'users',
+            children: [
+              { path: 'add', component: UserComponent },
+              { path: '', component: UserDirectoryComponent }
+            ]
+          },
+          { path: '', component: RightsManagementDashboardComponent }
+        ]
       },
       {
         path: 'company',

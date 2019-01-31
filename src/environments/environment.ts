@@ -11,6 +11,10 @@ export const employee_directory_params = {
   employeeDirectoryDefaultPageSize: '5'
 };
 
+export const user_directory_params = {
+  userDirectoryDefaultPageSize: '25'
+};
+
 export const environment = {
   production: false,
   subscriptionKey: 'e3d39b6740494052b6ea534de2fc8e04',
@@ -22,7 +26,7 @@ export const environment = {
   Google_Maps_API_static: `${GoogleMapsAPI}staticmap?`,
 
   DatabaseAPI_auth: `${DBAPI}/auth`,
-  DatabaseAPI_users: `${DBAPI}/users`,
+  DatabaseAPI_users: `${DBAPI}/users/`,
   DatabaseAPI_menu: `${DBAPI}/menu`,
   DatabaseAPI_Project: `${DBAPI}/projects/`,
   DatabaseAPI_Location: `${DBAPI}/locations/`,
