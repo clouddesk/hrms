@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
       width: '350px'
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.router.navigate([''], { relativeTo: this.route });
+      this.router.navigate(['/'], { relativeTo: this.route });
     });
   }
 

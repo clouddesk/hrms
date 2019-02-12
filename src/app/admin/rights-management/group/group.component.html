@@ -1,0 +1,33 @@
+<div fxLayout="column" class="container">
+  <div fxFlex="100" fxFlexAlign="center"><!--  --></div>
+  <form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+    <div>
+      <mat-form-field style="width: 24em;">
+        <mat-hint>Name</mat-hint>
+        <input formControlName="inputName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field style="width: 24em;">
+        <mat-hint>Description</mat-hint>
+        <input formControlName="inputDescription" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field style="width: 5em;">
+        <mat-hint>Level</mat-hint>
+        <input type="number" formControlName="inputLevel" matInput />
+      </mat-form-field>
+      <br />
+      <br />
+      <mat-checkbox 
+        formControlName="inputState" 
+        color="primary"
+        labelPosition="before">Active</mat-checkbox>
+      <br />      
+    </div>
+    <br />
+    <button mat-raised-button type="submit">Submit</button> <br />
+    <br />
+  </form>
+</div>

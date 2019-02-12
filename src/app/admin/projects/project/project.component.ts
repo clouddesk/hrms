@@ -13,9 +13,6 @@ export class ProjectComponent implements OnInit {
   projectForm: FormGroup;
   locations = null;
 
-  // selectedValue: string;
-  // selectedLocation: string;
-
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute,

@@ -13,6 +13,8 @@ export class UserComponent implements OnInit {
   userForm: FormGroup;
   isLoading = false;
 
+  groups = null;
+
   constructor(
     private dataService: DataService,
     private router: Router,
@@ -27,6 +29,7 @@ export class UserComponent implements OnInit {
         Validators.required,
         Validators.email
       ]),
+      inputUserGroupId: new FormControl(null),
       inputPassword: new FormControl(null, [
         Validators.required,
         Validators.minLength(8)
@@ -36,6 +39,7 @@ export class UserComponent implements OnInit {
         Validators.minLength(8)
       ])
     });
+    this.getGroups();
   }
 
   onSubmit() {
@@ -43,6 +47,7 @@ export class UserComponent implements OnInit {
       this.userForm.get('inputFirstName').value,
       this.userForm.get('inputLastName').value,
       this.userForm.get('inputEmail').value,
+      this.userForm.get('inputUserGroupId').value,
       this.userForm.get('inputPassword').value
     );
     this.isLoading = true;
@@ -54,5 +59,11 @@ export class UserComponent implements OnInit {
         console.log(err.error);
       }
     );
+  }
+
+  getGroups() {
+    this.dataService.getAllGroups().subscribe(result => {
+      this.groups = result;
+    });
   }
 }

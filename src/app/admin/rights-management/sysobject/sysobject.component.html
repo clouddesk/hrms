@@ -1,0 +1,18 @@
+<div fxLayout="column" class="container">
+    <div fxFlex="100" fxFlexAlign="center"><!--  --></div>
+    <form [formGroup]="sysObjectForm" (ngSubmit)="onSubmit()">
+      <div>
+        <mat-form-field style="width: 24em;">
+          <mat-hint>Name</mat-hint>
+          <input formControlName="inputName" matInput />
+          <mat-icon matSuffix>title</mat-icon>
+        </mat-form-field>
+        <br />
+        <br />
+      </div>
+      <br />
+      <button mat-raised-button type="submit">Submit</button> <br />
+      <br />
+    </form>
+  </div>
+  

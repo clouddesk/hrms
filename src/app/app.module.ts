@@ -43,9 +43,15 @@ import { ProjectsDashboardComponent } from './admin/projects/projects-dashboard/
 import { LocationMapComponent } from './admin/locations/locations-dashboard/location-map/location-map.component';
 import { ReportsComponent } from './admin/reports/reports.component';
 import { AttendanceReportComponent } from './admin/reports/attendance-report/attendance-report.component';
+// tslint:disable-next-line:max-line-length
 import { RightsManagementDashboardComponent } from './admin/rights-management/rights-management-dashboard/rights-management-dashboard.component';
 import { UserDirectoryComponent } from './admin/rights-management/user-directory/user-directory.component';
 import { UserComponent } from './admin/rights-management/user/user.component';
+import { GroupComponent } from './admin/rights-management/group/group.component';
+import { PermissionComponent } from './admin/rights-management/permission/permission.component';
+import { GroupDirectoryComponent } from './admin/rights-management/group-directory/group-directory.component';
+import { SysobjectComponent } from './admin/rights-management/sysobject/sysobject.component';
+import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject-directory/sysobject-directory.component';
 
 @NgModule({
   entryComponents: [
@@ -84,6 +90,11 @@ import { UserComponent } from './admin/rights-management/user/user.component';
     RightsManagementDashboardComponent,
     UserDirectoryComponent,
     UserComponent,
+    GroupComponent,
+    PermissionComponent,
+    GroupDirectoryComponent,
+    SysobjectComponent,
+    SysobjectDirectoryComponent
   ],
   imports: [
     BrowserModule,
@@ -94,9 +105,17 @@ import { UserComponent } from './admin/rights-management/user/user.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    LayoutModule,
+    LayoutModule
   ],
-  providers: [DataService, AuthService, AuthGuard, SignUpGuard, MenuService, MsFaceApiService, GoogleMapsApiService],
+  providers: [
+    DataService,
+    AuthService,
+    AuthGuard,
+    SignUpGuard,
+    MenuService,
+    MsFaceApiService,
+    GoogleMapsApiService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

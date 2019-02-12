@@ -20,10 +20,15 @@ import { LocationsDashboardComponent } from './admin/locations/locations-dashboa
 import { ProjectsDashboardComponent } from './admin/projects/projects-dashboard/projects-dashboard.component';
 import { ReportsComponent } from './admin/reports/reports.component';
 import { AttendanceReportComponent } from './admin/reports/attendance-report/attendance-report.component';
-import { UserDirectoryComponent } from './admin/rights-management/user-directory/user-directory.component';
 // tslint:disable-next-line:max-line-length
 import { RightsManagementDashboardComponent } from './admin/rights-management/rights-management-dashboard/rights-management-dashboard.component';
 import { UserComponent } from './admin/rights-management/user/user.component';
+import { UserDirectoryComponent } from './admin/rights-management/user-directory/user-directory.component';
+import { GroupComponent } from './admin/rights-management/group/group.component';
+import { GroupDirectoryComponent } from './admin/rights-management/group-directory/group-directory.component';
+import { PermissionComponent } from './admin/rights-management/permission/permission.component';
+import { SysobjectComponent } from './admin/rights-management/sysobject/sysobject.component';
+import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject-directory/sysobject-directory.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -61,6 +66,29 @@ const routes: Routes = [
             children: [
               { path: 'add', component: UserComponent },
               { path: '', component: UserDirectoryComponent }
+            ]
+          },
+          {
+            path: 'sysobjects',
+            children: [
+              { path: 'add', component: SysobjectComponent },
+              { path: '', component: SysobjectDirectoryComponent }
+            ]
+          },
+          {
+            path: 'groups',
+            children: [
+              { path: 'add', component: GroupComponent },
+              {
+                path: '',
+                component: GroupDirectoryComponent,
+                children: [
+                  {
+                    path: 'permission/:id',
+                    component: PermissionComponent
+                  }
+                ]
+              }
             ]
           },
           { path: '', component: RightsManagementDashboardComponent }

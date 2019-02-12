@@ -9,7 +9,11 @@
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
   </button>
   <button mat-button routerLink="./users"><mat-icon>person</mat-icon> All Users</button>
-  <button mat-button routerLink="./users/add"><mat-icon>add_circle</mat-icon> New User</button>
+  <button mat-button routerLink="./users/add"><mat-icon>person_add</mat-icon> New User</button> |
+  <button mat-button  routerLink="./groups"><mat-icon>group</mat-icon> All Groups</button>
+  <button mat-button routerLink="./groups/add"><mat-icon>group_add</mat-icon> New Group</button> |
+  <button mat-button  routerLink="./sysobjects"><mat-icon>library_books</mat-icon> All Objects</button>
+  <button mat-button routerLink="./sysobjects/add"><mat-icon>library_add</mat-icon> New Object</button> |
 </mat-toolbar>
 <div class="container">
   <router-outlet></router-outlet>

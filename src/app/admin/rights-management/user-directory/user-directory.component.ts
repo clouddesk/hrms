@@ -6,8 +6,14 @@ import { MatPaginator, MatSort, MatDialog, PageEvent } from '@angular/material';
 import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from 'src/app/_services/auth.service';
-import { map, debounceTime, distinctUntilChanged, startWith, switchMap, catchError } from 'rxjs/operators';
-import { UserComponent } from '../user/user.component';
+import {
+  map,
+  debounceTime,
+  distinctUntilChanged,
+  startWith,
+  switchMap,
+  catchError
+} from 'rxjs/operators';
 import { user_directory_params } from 'src/environments/environment';
 
 @Component({
@@ -16,7 +22,6 @@ import { user_directory_params } from 'src/environments/environment';
   styleUrls: ['./user-directory.component.scss']
 })
 export class UserDirectoryComponent implements OnInit {
-
   dataSource: DataService | null;
   users: User[] = [];
   defaultPageSize: string;
@@ -69,7 +74,8 @@ export class UserDirectoryComponent implements OnInit {
         res => {
           this.getUsers(res);
         },
-        err => console.log(err.error.error.code + ': ' + err.error.error.message)
+        err =>
+          console.log(err.error.error.code + ': ' + err.error.error.message)
       );
   }
 
@@ -106,20 +112,14 @@ export class UserDirectoryComponent implements OnInit {
   }
 
   ViewUserForm(i: number) {
-// ....
+    // ....
   }
 
   addUserForm() {
-    const dialogRef = this.dialog.open(UserComponent, {
-      width: '500px',
-      data: null
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      this.getUsers(this.search_event_log);
-    });
+    // ...
   }
 
-  onDeleteUser(user_id: number) {
+  removeUser(user_id: number) {
     this.dataService.removeUser(user_id).subscribe(() => {
       this.getUsers();
     });
@@ -198,8 +198,10 @@ export class UserDirectoryComponent implements OnInit {
           return observableOf([]);
         })
       )
-      .subscribe(data => (this.users = data), err => console.log(err.error.error.code + ': ' + err.error.error.message));
+      .subscribe(
+        data => (this.users = data),
+        err =>
+          console.log(err.error.error.code + ': ' + err.error.error.message)
+      );
   }
-
-
 }

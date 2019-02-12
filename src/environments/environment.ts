@@ -11,8 +11,20 @@ export const employee_directory_params = {
   employeeDirectoryDefaultPageSize: '5'
 };
 
+export const sysobject_directory_params = {
+  sysObjectDirectoryDefaultPageSize: '25'
+};
+
 export const user_directory_params = {
   userDirectoryDefaultPageSize: '25'
+};
+
+export const group_directory_params = {
+  groupDirectoryDefaultPageSize: '25'
+};
+
+export const permission_directory_params = {
+  permissionDirectoryDefaultPageSize: '25'
 };
 
 export const environment = {
@@ -27,6 +39,11 @@ export const environment = {
 
   DatabaseAPI_auth: `${DBAPI}/auth`,
   DatabaseAPI_users: `${DBAPI}/users/`,
+  DatabaseAPI_groups: `${DBAPI}/groups/`,
+  DatabaseAPI_sysObjects: `${DBAPI}/sysobjects/`,
+  DatabaseAPI_permissions_library: `${DBAPI}/permissions/library/`,
+  DatabaseAPI_permissions_group: `${DBAPI}/permissions/group/`,
+  DatabaseAPI_permissions_user: `${DBAPI}/permissions/user/`,
   DatabaseAPI_menu: `${DBAPI}/menu`,
   DatabaseAPI_Project: `${DBAPI}/projects/`,
   DatabaseAPI_Location: `${DBAPI}/locations/`,

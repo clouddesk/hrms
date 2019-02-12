@@ -171,12 +171,149 @@ export class DataService {
     });
   }
 
-
   removeUser(userId: number): Observable<any> {
-    console.log(environment.DatabaseAPI_users + userId);
     return this.http.delete(environment.DatabaseAPI_users + userId, {
       headers: this.getHeader()
     });
+  }
+
+  // ================================ END ===========================================
+  // =============================== GROUP SERVICES ==================================
+
+  addNewGroup(group: any): Observable<any> {
+    return this.http.post(environment.DatabaseAPI_groups, group, {
+      headers: this.getHeader()
+    });
+  }
+
+  getAllGroups(): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader().append('getallgroups', 'yes')
+    };
+    return this.http.get(environment.DatabaseAPI_groups, httpOptions);
+  }
+
+  getGroups(
+    sort: string,
+    order: string,
+    page: string,
+    limit: string,
+    term: string
+  ): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader(),
+      params: new HttpParams()
+        .set('sort', sort)
+        .append('order', order)
+        .append('page', page)
+        .append('limit', limit)
+        .append('term', term)
+    };
+    return this.http.get(environment.DatabaseAPI_groups, httpOptions);
+  }
+
+  editGroup(groupId: number, newGroup: any): Observable<any> {
+    const url = environment.DatabaseAPI_groups + groupId;
+    return this.http.post(url, newGroup, {
+      headers: this.getHeader()
+    });
+  }
+
+  removeGroup(groupId: number): Observable<any> {
+    return this.http.delete(environment.DatabaseAPI_groups + groupId, {
+      headers: this.getHeader()
+    });
+  }
+
+  // ================================ END ===========================================
+  // =============================== SYSOBJECT SERVICES ==================================
+
+  addNewSysObject(sysObject: any): Observable<any> {
+    return this.http.post(environment.DatabaseAPI_sysObjects, sysObject, {
+      headers: this.getHeader()
+    });
+  }
+
+  getAllSysObjects(): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader().append('getallsysobjects', 'yes')
+    };
+    return this.http.get(environment.DatabaseAPI_sysObjects, httpOptions);
+  }
+
+  getSysObjects(
+    sort: string,
+    order: string,
+    page: string,
+    limit: string,
+    term: string
+  ): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader(),
+      params: new HttpParams()
+        .set('sort', sort)
+        .append('order', order)
+        .append('page', page)
+        .append('limit', limit)
+        .append('term', term)
+    };
+    return this.http.get(environment.DatabaseAPI_sysObjects, httpOptions);
+  }
+
+  editSysObject(sysObjectId: number, newSysObject: any): Observable<any> {
+    const url = environment.DatabaseAPI_sysObjects + sysObjectId;
+    return this.http.post(url, newSysObject, {
+      headers: this.getHeader()
+    });
+  }
+
+  removeSysObject(sysObjectId: number): Observable<any> {
+    return this.http.delete(environment.DatabaseAPI_sysObjects + sysObjectId, {
+      headers: this.getHeader()
+    });
+  }
+
+  // ================================ END ===========================================
+  // =============================== PERMISSION SERVICES ==================================
+  getAllPermissionsForGroup(groupId?: number): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader().append('getallpermissions', 'yes')
+    };
+    return this.http.get(
+      environment.DatabaseAPI_permissions_group + groupId,
+      httpOptions
+    );
+  }
+
+  getPermissionsForGroup(groupId: number, term: string): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader(),
+      params: new HttpParams().append('term', term)
+    };
+    const url = environment.DatabaseAPI_permissions_group + groupId;
+    return this.http.get(url, httpOptions);
+  }
+
+  addPermission(groupId: number, newPermission: any): Observable<any> {
+    const url = environment.DatabaseAPI_permissions_group + groupId;
+    return this.http.post(url, newPermission, { headers: this.getHeader() });
+  }
+
+  removePermission(
+    groupId: number,
+    sysObject: string,
+    permission: string
+  ): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader(),
+      params: new HttpParams()
+        .append('sysObject', sysObject)
+        .append('permission', permission)
+    };
+    return this.http.delete(
+      environment.DatabaseAPI_permissions_group + groupId,
+      httpOptions
+    );
   }
 
   // ================================ END ===========================================
