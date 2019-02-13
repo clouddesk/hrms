@@ -353,6 +353,16 @@ export class DataService {
       headers: this.getHeader()
     });
   }
+  getAttendaceSummary(fromDate: any, toDate: any): Observable<any> {
+    const httpOptions = {
+      headers: this.getHeader().append('getallpermissions', 'yes'),
+      params: new HttpParams()
+      .append('fromDate', fromDate)
+      .append('toDate', toDate)
+    };
+    const url = environment.DatabaseAPI_report + 'attendance/summary';
+    return this.http.get(url, httpOptions);
+  }
 
   // ================================== END =========================================
   // =============================== PROJECT SERVICES ==================================

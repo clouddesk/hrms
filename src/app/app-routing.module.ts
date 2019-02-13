@@ -29,6 +29,7 @@ import { GroupDirectoryComponent } from './admin/rights-management/group-directo
 import { PermissionComponent } from './admin/rights-management/permission/permission.component';
 import { SysobjectComponent } from './admin/rights-management/sysobject/sysobject.component';
 import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject-directory/sysobject-directory.component';
+import { AttendanceSummaryReportComponent } from './admin/reports/attendance-summary-report/attendance-summary-report.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -103,9 +104,13 @@ const routes: Routes = [
         component: ReportsComponent,
         children: [
           {
+            path: 'attendance/summary',
+            component: AttendanceSummaryReportComponent
+          },
+          {
             path: 'attendance',
             component: AttendanceReportComponent
-          }
+          },
         ]
       },
       {

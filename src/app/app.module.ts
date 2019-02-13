@@ -52,6 +52,7 @@ import { PermissionComponent } from './admin/rights-management/permission/permis
 import { GroupDirectoryComponent } from './admin/rights-management/group-directory/group-directory.component';
 import { SysobjectComponent } from './admin/rights-management/sysobject/sysobject.component';
 import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject-directory/sysobject-directory.component';
+import { AttendanceSummaryReportComponent } from './admin/reports/attendance-summary-report/attendance-summary-report.component';
 
 @NgModule({
   entryComponents: [
@@ -94,7 +95,8 @@ import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject
     PermissionComponent,
     GroupDirectoryComponent,
     SysobjectComponent,
-    SysobjectDirectoryComponent
+    SysobjectDirectoryComponent,
+    AttendanceSummaryReportComponent
   ],
   imports: [
     BrowserModule,
