@@ -16,6 +16,8 @@ export class AttendanceSummaryReportComponent implements OnInit {
   displayedColumns = [];
   dataSource: DataService | null;
 
+  projects = null;
+
   isLoadingResults = false;
 
   constructor(
@@ -25,11 +27,19 @@ export class AttendanceSummaryReportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getProjects();
     this.attendanceReportFilterForm = new FormGroup({
       inputFromDate: new FormControl(null),
-      inputToDate: new FormControl(null)
+      inputToDate: new FormControl(null),
+      inputProjectId: new FormControl(null, [Validators.required])
     });
     this.dataSource = new DataService(this.http, this.authService);
+  }
+
+  getProjects() {
+    this.dataService.getProjects().subscribe(result => {
+      this.projects = result;
+    });
   }
 
   getAttendanceSummaryReport() {
@@ -44,6 +54,7 @@ export class AttendanceSummaryReportComponent implements OnInit {
       fromDate.setHours(fromDate.getHours() + 4);
     }
     let toDate: Date = this.attendanceReportFilterForm.get('inputToDate').value;
+    const projectId: number = this.attendanceReportFilterForm.get('inputProjectId').value;
 
     if (!toDate) {
       toDate = new Date(Date.now());
@@ -52,12 +63,9 @@ export class AttendanceSummaryReportComponent implements OnInit {
     } else {
       toDate.setHours(toDate.getHours() + 28);
     }
-    this.dataService.getAttendaceSummary(fromDate, toDate).subscribe(
+    this.dataService.getAttendaceSummary(fromDate, toDate, projectId).subscribe(
       result => {
-        if (result.length > 1) {
-          result.splice(0, 1);
-        }
-        this.displayedColumns = Object.keys(result[0]);
+        result.length > 0 ? this.displayedColumns = Object.keys(result[0]) : this.displayedColumns = [];
         this.attendanceData = result;
         this.isLoadingResults = false;
         console.log(result);

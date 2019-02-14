@@ -47,6 +47,7 @@
 <button
 type="button"
 (click)="getAttendanceReport(projectId)"
+[disabled]="!attendanceReportFilterForm.valid"
 style="margin-left: 2rem"
 mat-raised-button
 >

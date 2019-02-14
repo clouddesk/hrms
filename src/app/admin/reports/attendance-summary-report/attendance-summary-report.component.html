@@ -28,6 +28,20 @@
       <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
       <mat-datepicker #pickerTo></mat-datepicker>
     </mat-form-field>
+    <mat-form-field  style="width: 100%;">
+      <mat-select
+        placeholder="Project:"
+        matNativeControl
+        formControlName="inputProjectId"
+        name="project"
+        #projectId
+      >
+        <mat-option *ngFor="let project of projects" [value]="project.id">
+          {{ project.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
   </form>
 </mat-toolbar>
 <button
@@ -35,6 +49,7 @@
   (click)="getAttendanceSummaryReport()"
   style="margin-left: 2rem"
   mat-raised-button
+  [disabled]="!attendanceReportFilterForm.valid"
 >
   Generate Report
 </button>
