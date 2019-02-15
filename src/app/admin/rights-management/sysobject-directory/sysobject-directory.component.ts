@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatDialog, PageEvent } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
+import { MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { merge, of as observableOf, Subject } from 'rxjs';
 import {
   catchError,
@@ -11,9 +10,9 @@ import {
   distinctUntilChanged
 } from 'rxjs/operators';
 
-import { DataService } from 'src/app/_services/data.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { sysobject_directory_params } from '../../../../environments/environment';
+import { SysObjectService } from 'src/app/_services/sys-object.service';
 
 @Component({
   selector: 'app-sysobject-directory',
@@ -23,7 +22,6 @@ import { sysobject_directory_params } from '../../../../environments/environment
 export class SysobjectDirectoryComponent implements OnInit {
   sysObjects: [] = [];
   displayedColumns = ['id', 'name', 'actions'];
-  dataSource: DataService | null;
   defaultPageSize: string;
 
   sysObjectActiveForEditing: number[] = [];
@@ -37,18 +35,13 @@ export class SysobjectDirectoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private dataService: DataService
-  ) {}
+  constructor(private sysObjectService: SysObjectService) {}
 
   pageEvent: PageEvent;
 
   ngOnInit() {
     this.defaultPageSize =
       sysobject_directory_params.sysObjectDirectoryDefaultPageSize;
-    this.dataSource = new DataService(this.http, this.authService);
     this.sort.sortChange.subscribe(
       () => (this.paginator.pageIndex = 0),
       err => console.log(err.error.error.code + ': ' + err.error.error.message)
@@ -90,7 +83,7 @@ export class SysobjectDirectoryComponent implements OnInit {
   }
 
   saveSysObject(sysObjectId: any, sysObjectName: string) {
-    this.dataService
+    this.sysObjectService
       .editSysObject(sysObjectId, { name: sysObjectName })
       .subscribe(() => {
         this.getSysObjects();
@@ -103,7 +96,7 @@ export class SysobjectDirectoryComponent implements OnInit {
   }
 
   removeSysObject(sysObjectId: number) {
-    this.dataService
+    this.sysObjectService
       .removeSysObject(sysObjectId)
       .subscribe(() => this.getSysObjects(), error => console.log(error));
   }
@@ -117,7 +110,7 @@ export class SysobjectDirectoryComponent implements OnInit {
           const limit: string = this.paginator.pageSize
             ? this.paginator.pageSize.toString()
             : sysobject_directory_params.sysObjectDirectoryDefaultPageSize;
-          return this.dataSource.getSysObjects(
+          return this.sysObjectService.getSysObjects(
             this.sort.active,
             this.sort.direction,
             this.paginator.pageIndex.toString(),

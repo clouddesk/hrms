@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from 'src/app/_services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
+import { LocationService } from 'src/app/_services/location.service';
+import { ProjectService } from 'src/app/_services/project.service';
 
 @Component({
   selector: 'app-project',
@@ -14,7 +15,8 @@ export class ProjectComponent implements OnInit {
   locations = null;
 
   constructor(
-    private dataService: DataService,
+    private locationService: LocationService,
+    private projectService: ProjectService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -24,7 +26,7 @@ export class ProjectComponent implements OnInit {
       projectName: this.projectForm.value.inputProjectName,
       locationId: this.projectForm.value.inputProjectLocationId
     };
-    this.dataService.addProject(newProject).subscribe(() => {
+    this.projectService.addProject(newProject).subscribe(() => {
       this.router.navigate(['.'], { relativeTo: this.route.parent });
     });
   }
@@ -38,7 +40,7 @@ export class ProjectComponent implements OnInit {
   }
 
   getLocations() {
-    this.dataService.getLocations().subscribe(result => {
+    this.locationService.getLocations().subscribe(result => {
       this.locations = result;
     });
   }

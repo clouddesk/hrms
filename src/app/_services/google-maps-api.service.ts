@@ -15,7 +15,6 @@ export class GoogleMapsApiService {
     maptype: string = 'hybrid',
     region: string = 'ge'
   ): Observable<any> {
-    console.log('Google Maps API was called...');
     return this.http.get(
       `${
         environment.Google_Maps_API_static

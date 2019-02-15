@@ -10,8 +10,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { Employee } from 'src/app/models/employee';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from 'src/app/_services/data.service';
 import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
+import { EmployeeService } from 'src/app/_services/employee.service';
+import { FileService } from 'src/app/_services/file.service';
+import { ProjectService } from 'src/app/_services/project.service';
 
 @Component({
   selector: 'app-employee',
@@ -39,7 +41,9 @@ export class EmployeeComponent implements OnInit {
   };
 
   constructor(
-    private dataService: DataService,
+    private employeeService: EmployeeService,
+    private fileService: FileService,
+    private projectService: ProjectService,
     private faceApi: MsFaceApiService,
     public dialogRef: MatDialogRef<EmployeeComponent>,
     @Inject(MAT_DIALOG_DATA) public employee: any
@@ -80,7 +84,7 @@ export class EmployeeComponent implements OnInit {
         ]),
         inputBirthDate: new FormControl(null, [Validators.required]),
         inputMobilePhone: new FormControl(null, [Validators.required]),
-        inputProjectId: new FormControl(null, [Validators.required]),
+        inputProjectId: new FormControl(null, [Validators.required])
       });
     }
   }
@@ -92,11 +96,11 @@ export class EmployeeComponent implements OnInit {
       this.employeeForm.get('inputPersonalId').value,
       this.employeeForm.get('inputBirthDate').value,
       this.employeeForm.get('inputMobilePhone').value,
-      this.employeeForm.get('inputProjectId').value,
+      this.employeeForm.get('inputProjectId').value
     );
     this.isLoading = true;
     if (this.employee) {
-      this.dataService
+      this.employeeService
         .editEmployee(this.employee.id, changedEmployee)
         .subscribe(
           () => {
@@ -109,7 +113,7 @@ export class EmployeeComponent implements OnInit {
           }
         );
     } else {
-      this.dataService.addNewEmployee(changedEmployee).subscribe(
+      this.employeeService.addNewEmployee(changedEmployee).subscribe(
         employee => {
           this.faceApi
             .addPersonToPersonGroup(
@@ -118,7 +122,7 @@ export class EmployeeComponent implements OnInit {
             )
             .subscribe(
               person => {
-                this.dataService
+                this.employeeService
                   .addPersonIdToEmployee(employee.id, person.personId)
                   .subscribe(
                     () => {
@@ -150,7 +154,7 @@ export class EmployeeComponent implements OnInit {
   onDelete() {
     this.isLoading = true;
     if (this.employee.employeePhotoFileId) {
-      this.dataService.deleteFile(this.employee.employeePhotoFileId).subscribe(
+      this.fileService.deleteFile(this.employee.employeePhotoFileId).subscribe(
         () => {
           this.faceApi
             .deletePersonFromPersonGroup(
@@ -159,7 +163,7 @@ export class EmployeeComponent implements OnInit {
             )
             .subscribe(
               () => {
-                this.dataService.removeEmployee(this.employee.id).subscribe(
+                this.employeeService.removeEmployee(this.employee.id).subscribe(
                   () => {
                     this.isLoading = false;
                     this.dialogRef.close();
@@ -191,7 +195,7 @@ export class EmployeeComponent implements OnInit {
         )
         .subscribe(
           () => {
-            this.dataService.removeEmployee(this.employee.id).subscribe(
+            this.employeeService.removeEmployee(this.employee.id).subscribe(
               () => {
                 this.dialogRef.close();
                 this.isLoading = false;
@@ -211,10 +215,10 @@ export class EmployeeComponent implements OnInit {
   }
 
   getEmployeePhoto(employee_id: number) {
-    this.dataService.getEmployee(employee_id).subscribe(
+    this.employeeService.getEmployee(employee_id).subscribe(
       employee => {
         if (+employee.employeePhotoFileId) {
-          this.dataService.getFile(+employee.employeePhotoFileId).subscribe(
+          this.fileService.getFile(+employee.employeePhotoFileId).subscribe(
             (blob: Blob) => {
               if (blob.size > 27) {
                 this.createImageFromBlob(blob);
@@ -277,7 +281,6 @@ export class EmployeeComponent implements OnInit {
     );
   }
 
-
   async takePhoto() {
     // Start camera and show preview
     if (!this.isCameraActive) {
@@ -299,7 +302,7 @@ export class EmployeeComponent implements OnInit {
         this.isLoading = true;
 
         // Create Form Data
-        const blob = await this.dataService.createBlob(
+        const blob = await this.fileService.createBlob(
           this.captureData.replace('data:image/png;base64,', ''),
           'image/png'
         );
@@ -308,18 +311,18 @@ export class EmployeeComponent implements OnInit {
 
         this.faceApi.addFaceToPerson(blob, personGroupId, personId).subscribe(
           resultOfaddFaceToPerson => {
-            this.dataService.uploadFile(formData).subscribe(file_id => {
-              this.dataService
+            this.fileService.uploadFile(formData).subscribe(file_id => {
+              this.employeeService
                 .linkPhotoWithPerson(employee_id, file_id)
                 .subscribe(() => {
-                  this.dataService
+                  this.employeeService
                     .addPersistedFaceIdtoEmployee(
                       employee_id,
                       resultOfaddFaceToPerson.persistedFaceId
                     )
                     .subscribe(() => {
                       if (employeePhotoFileId) {
-                        this.dataService
+                        this.fileService
                           .deleteFile(employeePhotoFileId)
                           .subscribe();
                       }
@@ -347,9 +350,8 @@ export class EmployeeComponent implements OnInit {
     }
   }
 
-
   getProjects() {
-    this.dataService.getProjects().subscribe(projects => {
+    this.projectService.getProjects().subscribe(projects => {
       this.projects = projects;
     });
   }

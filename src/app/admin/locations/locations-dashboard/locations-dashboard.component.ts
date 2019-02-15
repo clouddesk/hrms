@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/_services/data.service';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from 'src/app/_services/auth.service';
 import {
   trigger,
   state,
@@ -9,6 +6,7 @@ import {
   transition,
   animate
 } from '@angular/animations';
+import { LocationService } from 'src/app/_services/location.service';
 
 @Component({
   selector: 'app-locations-dashboard',
@@ -31,27 +29,23 @@ import {
 export class LocationsDashboardComponent implements OnInit {
   locations: [] = [];
   displayedColumns = ['id', 'name', 'address', 'actions'];
-  dataSource: DataService | null;
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private dataService: DataService
+    private locationService: LocationService
   ) {}
 
   ngOnInit() {
-    this.dataSource = new DataService(this.http, this.authService);
     this.getLocations();
   }
 
   removeLocation(locationId: number) {
-    this.dataService
+    this.locationService
       .removeLocation(locationId)
       .subscribe(() => this.getLocations(), error => console.log(error));
   }
 
   getLocations() {
-    this.dataService.getLocations().subscribe(
+    this.locationService.getLocations().subscribe(
       result => {
         this.locations = result;
       },

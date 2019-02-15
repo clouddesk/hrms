@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from 'src/app/_services/data.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Group } from 'src/app/models/group';
+import { GroupService } from 'src/app/_services/group.service';
 
 @Component({
   selector: 'app-group',
@@ -14,7 +14,7 @@ export class GroupComponent implements OnInit {
   isLoading = false;
 
   constructor(
-    private dataService: DataService,
+    private groupService: GroupService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -24,7 +24,7 @@ export class GroupComponent implements OnInit {
       inputName: new FormControl(null, [Validators.required]),
       inputDescription: new FormControl(null, [Validators.required]),
       inputLevel: new FormControl(null, [Validators.required]),
-      inputState: new FormControl(null, [Validators.required]),
+      inputState: new FormControl(null, [Validators.required])
     });
   }
 
@@ -36,7 +36,7 @@ export class GroupComponent implements OnInit {
       this.groupForm.get('inputState').value
     );
     this.isLoading = true;
-    this.dataService.addNewGroup(newGroup).subscribe(
+    this.groupService.addNewGroup(newGroup).subscribe(
       () => {
         this.router.navigate(['../'], { relativeTo: this.route });
       },

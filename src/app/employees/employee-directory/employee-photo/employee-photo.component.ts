@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataService } from 'src/app/_services/data.service';
+import { FileService } from 'src/app/_services/file.service';
 
 @Component({
   selector: 'app-employee-photo',
@@ -11,11 +11,11 @@ export class EmployeePhotoComponent implements OnInit {
 
   @Input() employee;
 
-  constructor(private dataService: DataService) {}
+  constructor(private fileService: FileService) {}
 
   ngOnInit() {
     if (+this.employee.employeePhotoFileId) {
-      this.dataService.getFile(+this.employee.employeePhotoFileId).subscribe(
+      this.fileService.getFile(+this.employee.employeePhotoFileId).subscribe(
         (blob: Blob) => {
           if (blob.size > 27) {
             this.createImageFromBlob(blob);

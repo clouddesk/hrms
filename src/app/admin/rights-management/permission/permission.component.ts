@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, MatSort, PageEvent } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
 import { merge, of as observableOf, Subject } from 'rxjs';
-import { DataService } from 'src/app/_services/data.service';
 import {
   catchError,
   map,
@@ -15,7 +13,9 @@ import {
 import { permission_directory_params } from '../../../../environments/environment';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/_services/auth.service';
+import { PermissionService } from 'src/app/_services/permission.service';
+import { SysObjectService } from 'src/app/_services/sys-object.service';
+import { GroupService } from 'src/app/_services/group.service';
 
 @Component({
   selector: 'app-permission',
@@ -27,7 +27,6 @@ export class PermissionComponent implements OnInit {
   objects = [];
 
   displayedColumns = ['1', '2', 'actions'];
-  dataSource: DataService | null;
   defaultPageSize: string;
 
   resultsLength = 0;
@@ -57,10 +56,10 @@ export class PermissionComponent implements OnInit {
       permission: this.permissionForm.value.inputPermissionName,
       object: this.permissionForm.value.inputObjectName
     };
-    this.dataService
+    this.permissionService
       .addPermission(+this.route.snapshot.params['id'], newPermission)
       .subscribe(() => {
-        this.dataService
+        this.permissionService
           .getAllPermissionsForGroup(+this.route.snapshot.params['id'])
           .subscribe(permissions => {
             this.permissions = permissions;
@@ -71,11 +70,11 @@ export class PermissionComponent implements OnInit {
   }
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService,
+    private permissionService: PermissionService,
+    private sysObjectService: SysObjectService,
+    private groupService: GroupService,
     private route: ActivatedRoute,
-    private router: Router,
-    private dataService: DataService
+    private router: Router
   ) {}
 
   addNewPermission() {
@@ -85,10 +84,9 @@ export class PermissionComponent implements OnInit {
   ngOnInit() {
     this.defaultPageSize =
       permission_directory_params.permissionDirectoryDefaultPageSize;
-    this.dataSource = new DataService(this.http, this.authService);
     this.getPermissionsForGroup();
     this.route.params.subscribe(param => {
-      this.dataService
+      this.permissionService
         .getAllPermissionsForGroup(+param['id'])
         .subscribe(data => {
           this.permissions = data;
@@ -106,7 +104,7 @@ export class PermissionComponent implements OnInit {
         err =>
           console.log(err.error.error.code + ': ' + err.error.error.message)
       );
-    this.dataService.getAllSysObjects().subscribe(data => {
+    this.sysObjectService.getAllSysObjects().subscribe(data => {
       this.objects = data;
     });
     this.permissionForm = new FormGroup({
@@ -125,7 +123,7 @@ export class PermissionComponent implements OnInit {
     sysObject: string,
     permission: string
   ) {
-    this.dataService
+    this.permissionService
       .removePermission(permissionId, sysObject, permission)
       .subscribe(
         () => this.getPermissionsForGroup(),
@@ -139,7 +137,7 @@ export class PermissionComponent implements OnInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.dataSource.getPermissionsForGroup(
+          return this.permissionService.getPermissionsForGroup(
             +this.route.snapshot.params['id'],
             terms
           );
@@ -163,7 +161,7 @@ export class PermissionComponent implements OnInit {
   }
 
   removeGroup() {
-    this.dataService
+    this.groupService
       .removeGroup(this.route.snapshot.params['id'])
       .subscribe(() => {
         this.router.navigate(['../../'], { relativeTo: this.route });

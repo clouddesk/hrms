@@ -4,7 +4,7 @@
 
 const MSCSfaceAPI_base =
   'https://westeurope.api.cognitive.microsoft.com/face/v1.0';
-const DBAPI = 'http://localhost:3000/api';
+const DBAPI = 'http://80.240.26.77/api';
 const GoogleMapsAPI = 'https://maps.googleapis.com/maps/api/';
 
 export const employee_directory_params = {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from 'src/app/_services/data.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SysObject } from 'src/app/models/sys-object';
+import { SysObjectService } from 'src/app/_services/sys-object.service';
 
 @Component({
   selector: 'app-sysobject',
@@ -14,9 +14,9 @@ export class SysobjectComponent implements OnInit {
   isLoading = false;
 
   constructor(
-    private dataService: DataService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private sysObjectService: SysObjectService
   ) {}
 
   ngOnInit() {
@@ -30,7 +30,7 @@ export class SysobjectComponent implements OnInit {
       this.sysObjectForm.get('inputName').value
     );
     this.isLoading = true;
-    this.dataService.addNewSysObject(newSysObject).subscribe(
+    this.sysObjectService.addNewSysObject(newSysObject).subscribe(
       () => {
         this.router.navigate(['../'], { relativeTo: this.route });
       },

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from '../../../_services/data.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { LocationService } from 'src/app/_services/location.service';
 
 @Component({
   selector: 'app-location',
@@ -12,7 +12,7 @@ export class LocationComponent implements OnInit {
   locationForm: FormGroup;
 
   constructor(
-    private dataService: DataService,
+    private locationService: LocationService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -26,7 +26,7 @@ export class LocationComponent implements OnInit {
         latitude: this.locationForm.value.inputLocationPositionLatitude
       }
     };
-    this.dataService
+    this.locationService
       .addLocation(newLocation)
       .subscribe(() =>
         this.router.navigate(['.'], { relativeTo: this.route.parent })

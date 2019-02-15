@@ -1,11 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DataService } from 'src/app/_services/data.service';
 import { User } from 'src/app/models/user';
 import { merge, of as observableOf, Subject } from 'rxjs';
 import { MatPaginator, MatSort, MatDialog, PageEvent } from '@angular/material';
-import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from 'src/app/_services/auth.service';
 import {
   map,
   debounceTime,
@@ -15,6 +11,7 @@ import {
   catchError
 } from 'rxjs/operators';
 import { user_directory_params } from 'src/environments/environment';
+import { UserService } from 'src/app/_services/user.service';
 
 @Component({
   selector: 'app-user-directory',
@@ -22,7 +19,6 @@ import { user_directory_params } from 'src/environments/environment';
   styleUrls: ['./user-directory.component.scss']
 })
 export class UserDirectoryComponent implements OnInit {
-  dataSource: DataService | null;
   users: User[] = [];
   defaultPageSize: string;
 
@@ -46,10 +42,7 @@ export class UserDirectoryComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private dataService: DataService,
-    private faceApi: MsFaceApiService,
-    private http: HttpClient,
-    private authService: AuthService,
+    private userService: UserService,
     public dialog: MatDialog
   ) {}
 
@@ -57,7 +50,6 @@ export class UserDirectoryComponent implements OnInit {
 
   ngOnInit() {
     this.defaultPageSize = user_directory_params.userDirectoryDefaultPageSize;
-    this.dataSource = new DataService(this.http, this.authService);
 
     this.sort.sortChange.subscribe(
       () => (this.paginator.pageIndex = 0),
@@ -95,7 +87,7 @@ export class UserDirectoryComponent implements OnInit {
   }
 
   saveUser(userId: any, firstName: string, lastName: string) {
-    this.dataService
+    this.userService
       .editUser(userId, { firstName: firstName, lastName: lastName })
       .subscribe(() => {
         this.getUsers();
@@ -120,54 +112,9 @@ export class UserDirectoryComponent implements OnInit {
   }
 
   removeUser(user_id: number) {
-    this.dataService.removeUser(user_id).subscribe(() => {
+    this.userService.removeUser(user_id).subscribe(() => {
       this.getUsers();
     });
-    // this.dataService.getUser(user_id).subscribe(
-    //   user => {
-    //     if (user.userPhotoFileId) {
-    //       this.dataService.deleteFile(user.userPhotoFileId).subscribe(
-    //         () => {
-    //           this.faceApi
-    //             .deletePersonFromPersonGroup(
-    //               user.personGroupId,
-    //               user.personId
-    //             )
-    //             .subscribe(
-    //               () => {
-    //                 this.dataService.removeUser(user_id).subscribe(
-    //                   () => {
-    //                     this.getUsers(this.search_event_log);
-    //                   },
-    //                   err => console.log(err.error.error.code + ': ' + err.error.error.message)
-    //                 );
-    //               },
-    //               err => console.log(err.error.error.code + ': ' + err.error.error.message)
-    //             );
-    //         },
-    //         err => console.log(err.error.error.code + ': ' + err.error.error.message)
-    //       );
-    //     } else {
-    //       this.faceApi
-    //         .deletePersonFromPersonGroup(
-    //           user.personGroupId,
-    //           user.personId
-    //         )
-    //         .subscribe(
-    //           () => {
-    //             this.dataService.removeUser(user_id).subscribe(
-    //               () => {
-    //                 this.getUsers(this.search_event_log);
-    //               },
-    //               err => console.log(err.error.error.code + ': ' + err.error.error.message)
-    //             );
-    //           },
-    //           err => console.log(err.error.error.code + ': ' + err.error.error.message)
-    //         );
-    //     }
-    //   },
-    //   err => console.log(err.error.error.code + ': ' + err.error.error.message)
-    // );
   }
 
   getUsers(terms?) {
@@ -179,7 +126,7 @@ export class UserDirectoryComponent implements OnInit {
           const limit: string = this.paginator.pageSize
             ? this.paginator.pageSize.toString()
             : user_directory_params.userDirectoryDefaultPageSize;
-          return this.dataSource.getUsers(
+          return this.userService.getUsers(
             this.sort.active,
             this.sort.direction,
             this.paginator.pageIndex.toString(),

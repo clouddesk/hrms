@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from 'src/app/_services/data.service';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from 'src/app/_services/auth.service';
 import {
   trigger,
   state,
@@ -10,6 +7,8 @@ import {
   transition,
   animate
 } from '@angular/animations';
+import { ProjectService } from 'src/app/_services/project.service';
+import { ReportService } from 'src/app/_services/report.service';
 
 @Component({
   selector: 'app-attendance-report',
@@ -34,7 +33,6 @@ export class AttendanceReportComponent implements OnInit {
 
   attendanceData: [] = [];
   displayedColumns = ['id', 'eventTypeId', 'employeeId', 'createdAt'];
-  dataSource: DataService | null;
 
   isLoadingResults = false;
 
@@ -44,9 +42,8 @@ export class AttendanceReportComponent implements OnInit {
   selectedLocation: string;
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private dataService: DataService
+    private projectService: ProjectService,
+    private reportService: ReportService,
   ) {}
 
   ngOnInit() {
@@ -56,11 +53,10 @@ export class AttendanceReportComponent implements OnInit {
       inputToDate: new FormControl(null),
       inputProjectId: new FormControl(null, [Validators.required])
     });
-    this.dataSource = new DataService(this.http, this.authService);
   }
 
   getProjects() {
-    this.dataService.getProjects().subscribe(result => {
+    this.projectService.getProjects().subscribe(result => {
       this.projects = result;
     });
   }
@@ -101,7 +97,7 @@ export class AttendanceReportComponent implements OnInit {
     } else {
       toDate.setHours(toDate.getHours() + 28);
     }
-    this.dataService.getAttendace(fromDate, toDate, projectId).subscribe(
+    this.reportService.getAttendance(fromDate, toDate, projectId).subscribe(
       result => {
         result.map(data => {
           const createdAt: Date = new Date(data.createdAt);

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService } from 'src/app/_services/data.service';
 import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UserService } from 'src/app/_services/user.service';
+import { GroupService } from 'src/app/_services/group.service';
 
 @Component({
   selector: 'app-user',
@@ -16,7 +17,8 @@ export class UserComponent implements OnInit {
   groups = null;
 
   constructor(
-    private dataService: DataService,
+    private userService: UserService,
+    private groupService: GroupService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -51,7 +53,7 @@ export class UserComponent implements OnInit {
       this.userForm.get('inputPassword').value
     );
     this.isLoading = true;
-    this.dataService.addNewUser(newUser).subscribe(
+    this.userService.addNewUser(newUser).subscribe(
       () => {
         this.router.navigate(['../'], { relativeTo: this.route });
       },
@@ -62,7 +64,7 @@ export class UserComponent implements OnInit {
   }
 
   getGroups() {
-    this.dataService.getAllGroups().subscribe(result => {
+    this.groupService.getAllGroups().subscribe(result => {
       this.groups = result;
     });
   }

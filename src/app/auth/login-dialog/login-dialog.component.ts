@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/_services/auth.service';
 
@@ -18,10 +18,17 @@ export class LoginDialogComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    public dialogRef: MatDialogRef<LoginDialogComponent>
+    public dialogRef: MatDialogRef<LoginDialogComponent>,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {}
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, '', {
+      duration: 5000
+    });
+  }
 
   onLogin() {
     if (this.loginForm.valid) {
@@ -31,7 +38,7 @@ export class LoginDialogComponent implements OnInit {
           this.loginForm.get('inputPassword').value
         )
         .then(() => this.dialogRef.close())
-        .catch(error => alert(error.error));
+        .catch(error => this.openSnackBar(error.error));
     }
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/_services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GroupService } from 'src/app/_services/group.service';
 
 @Component({
   selector: 'app-group-directory',
@@ -15,13 +15,13 @@ export class GroupDirectoryComponent implements OnInit {
   }
 
   constructor(
-    private dataService: DataService,
+    private groupService: GroupService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.dataService.getAllGroups().subscribe(data => {
+    this.groupService.getAllGroups().subscribe(data => {
       this.groups = data;
     });
   }

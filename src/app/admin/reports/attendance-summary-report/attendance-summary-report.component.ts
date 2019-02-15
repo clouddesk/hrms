@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/_services/data.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from 'src/app/_services/auth.service';
+import { ProjectService } from 'src/app/_services/project.service';
+import { ReportService } from 'src/app/_services/report.service';
 
 @Component({
   selector: 'app-attendance-summary-report',
@@ -14,16 +13,14 @@ export class AttendanceSummaryReportComponent implements OnInit {
 
   attendanceData = [];
   displayedColumns = [];
-  dataSource: DataService | null;
 
   projects = null;
 
   isLoadingResults = false;
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private dataService: DataService
+    private projectService: ProjectService,
+    private reportService: ReportService
   ) {}
 
   ngOnInit() {
@@ -33,11 +30,10 @@ export class AttendanceSummaryReportComponent implements OnInit {
       inputToDate: new FormControl(null),
       inputProjectId: new FormControl(null, [Validators.required])
     });
-    this.dataSource = new DataService(this.http, this.authService);
   }
 
   getProjects() {
-    this.dataService.getProjects().subscribe(result => {
+    this.projectService.getProjects().subscribe(result => {
       this.projects = result;
     });
   }
@@ -54,7 +50,9 @@ export class AttendanceSummaryReportComponent implements OnInit {
       fromDate.setHours(fromDate.getHours() + 4);
     }
     let toDate: Date = this.attendanceReportFilterForm.get('inputToDate').value;
-    const projectId: number = this.attendanceReportFilterForm.get('inputProjectId').value;
+    const projectId: number = this.attendanceReportFilterForm.get(
+      'inputProjectId'
+    ).value;
 
     if (!toDate) {
       toDate = new Date(Date.now());
@@ -63,17 +61,20 @@ export class AttendanceSummaryReportComponent implements OnInit {
     } else {
       toDate.setHours(toDate.getHours() + 28);
     }
-    this.dataService.getAttendaceSummary(fromDate, toDate, projectId).subscribe(
-      result => {
-        result.length > 0 ? this.displayedColumns = Object.keys(result[0]) : this.displayedColumns = [];
-        this.attendanceData = result;
-        this.isLoadingResults = false;
-        console.log(result);
-      },
-      error => {
-        console.log(error);
-        this.isLoadingResults = false;
-      }
-    );
+    this.reportService
+      .getAttendaceSummary(fromDate, toDate, projectId)
+      .subscribe(
+        result => {
+          result.length > 0
+            ? (this.displayedColumns = Object.keys(result[0]))
+            : (this.displayedColumns = []);
+          this.attendanceData = result;
+          this.isLoadingResults = false;
+        },
+        error => {
+          console.log(error);
+          this.isLoadingResults = false;
+        }
+      );
   }
 }

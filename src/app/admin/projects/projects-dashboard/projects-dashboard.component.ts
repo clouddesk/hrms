@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/_services/data.service';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from 'src/app/_services/auth.service';
+import { ProjectService } from 'src/app/_services/project.service';
+import { LocationService } from 'src/app/_services/location.service';
 
 @Component({
   selector: 'app-projects-dashboard',
@@ -12,19 +11,16 @@ export class ProjectsDashboardComponent implements OnInit {
   projects: [] = [];
   locations = null;
   displayedColumns = ['id', 'name', 'location', 'actions'];
-  dataSource: DataService | null;
   selectedLocation: number;
 
   projectActiveForEditing: number[] = [];
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private dataService: DataService,
+    private projectService: ProjectService,
+    private locationService: LocationService,
   ) {}
 
   ngOnInit() {
-    this.dataSource = new DataService(this.http, this.authService);
     this.getLocations();
     this.getProjects();
   }
@@ -45,7 +41,7 @@ export class ProjectsDashboardComponent implements OnInit {
   }
 
   saveProject(projectId: any, projectName: string, locationId: number) {
-    this.dataService
+    this.projectService
       .editProject(projectId, { name: projectName, locationId: locationId })
       .subscribe(() => {
         this.getProjects();
@@ -58,19 +54,19 @@ export class ProjectsDashboardComponent implements OnInit {
   }
 
   removeProject(projectId: number) {
-    this.dataService
+    this.projectService
       .removeProject(projectId)
       .subscribe(() => this.getProjects(), error => console.log(error));
   }
 
   getLocations() {
-    this.dataService.getLocations().subscribe(result => {
+    this.locationService.getLocations().subscribe(result => {
       this.locations = result;
     });
   }
 
   getProjects() {
-    this.dataService.getProjects().subscribe(
+    this.projectService.getProjects().subscribe(
       result => {
         this.projects = result;
       },

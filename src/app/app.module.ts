@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthService } from './_services/auth.service';
 import { AuthGuard, SignUpGuard } from './_services/auth-guard.service';
-import { DataService } from './_services/data.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MsFaceApiService } from './_services/ms-face-api.service';
@@ -53,6 +52,16 @@ import { GroupDirectoryComponent } from './admin/rights-management/group-directo
 import { SysobjectComponent } from './admin/rights-management/sysobject/sysobject.component';
 import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject-directory/sysobject-directory.component';
 import { AttendanceSummaryReportComponent } from './admin/reports/attendance-summary-report/attendance-summary-report.component';
+import { FileService } from './_services/file.service';
+import { AttendanceService } from './_services/attendance.service';
+import { EmployeeService } from './_services/employee.service';
+import { GroupService } from './_services/group.service';
+import { LocationService } from './_services/location.service';
+import { PermissionService } from './_services/permission.service';
+import { ProjectService } from './_services/project.service';
+import { ReportService } from './_services/report.service';
+import { SysObjectService } from './_services/sys-object.service';
+import { UserService } from './_services/user.service';
 
 @NgModule({
   entryComponents: [
@@ -110,7 +119,16 @@ import { AttendanceSummaryReportComponent } from './admin/reports/attendance-sum
     LayoutModule
   ],
   providers: [
-    DataService,
+    FileService,
+    AttendanceService,
+    EmployeeService,
+    GroupService,
+    LocationService,
+    PermissionService,
+    ProjectService,
+    ReportService,
+    SysObjectService,
+    UserService,
     AuthService,
     AuthGuard,
     SignUpGuard,

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog, PageEvent } from '@angular/material';
-import { DataService } from 'src/app/_services/data.service';
 import { EmployeeComponent } from '../employee/employee.component';
 import { merge, of as observableOf, Subject } from 'rxjs';
 import {
@@ -13,9 +12,10 @@ import {
 } from 'rxjs/operators';
 import { Employee } from 'src/app/models/employee';
 import { AuthService } from 'src/app/_services/auth.service';
-import { HttpClient } from '@angular/common/http';
 import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
 import { employee_directory_params } from '../../../environments/environment';
+import { EmployeeService } from 'src/app/_services/employee.service';
+import { FileService } from 'src/app/_services/file.service';
 
 @Component({
   selector: 'app-employee-directory',
@@ -23,7 +23,6 @@ import { employee_directory_params } from '../../../environments/environment';
   styleUrls: ['./employee-directory.component.scss']
 })
 export class EmployeeDirectoryComponent implements OnInit {
-  dataSource: DataService | null;
   data: Employee[] = [];
   defaultPageSize: string;
 
@@ -48,9 +47,9 @@ export class EmployeeDirectoryComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private dataService: DataService,
     private faceApi: MsFaceApiService,
-    private http: HttpClient,
+    private employeeService: EmployeeService,
+    private fileService: FileService,
     private authService: AuthService,
     public dialog: MatDialog
   ) {}
@@ -58,8 +57,8 @@ export class EmployeeDirectoryComponent implements OnInit {
   pageEvent: PageEvent;
 
   ngOnInit() {
-    this.defaultPageSize = employee_directory_params.employeeDirectoryDefaultPageSize;
-    this.dataSource = new DataService(this.http, this.authService);
+    this.defaultPageSize =
+      employee_directory_params.employeeDirectoryDefaultPageSize;
 
     this.sort.sortChange.subscribe(
       () => (this.paginator.pageIndex = 0),
@@ -76,7 +75,8 @@ export class EmployeeDirectoryComponent implements OnInit {
         res => {
           this.getEmployees(res);
         },
-        err => console.log(err.error.error.code + ': ' + err.error.error.message)
+        err =>
+          console.log(err.error.error.code + ': ' + err.error.error.message)
       );
   }
 
@@ -86,7 +86,7 @@ export class EmployeeDirectoryComponent implements OnInit {
   }
 
   ViewEmployeeForm(i: number) {
-    this.dataService.getEmployee(i).subscribe(employee => {
+    this.employeeService.getEmployee(i).subscribe(employee => {
       const dialogRef = this.dialog.open(EmployeeComponent, {
         width: '500px',
         data: employee
@@ -109,10 +109,10 @@ export class EmployeeDirectoryComponent implements OnInit {
   }
 
   onDeleteEmployee(employee_id: number) {
-    this.dataService.getEmployee(employee_id).subscribe(
+    this.employeeService.getEmployee(employee_id).subscribe(
       employee => {
         if (employee.employeePhotoFileId) {
-          this.dataService.deleteFile(employee.employeePhotoFileId).subscribe(
+          this.fileService.deleteFile(employee.employeePhotoFileId).subscribe(
             () => {
               this.faceApi
                 .deletePersonFromPersonGroup(
@@ -121,17 +121,24 @@ export class EmployeeDirectoryComponent implements OnInit {
                 )
                 .subscribe(
                   () => {
-                    this.dataService.removeEmployee(employee_id).subscribe(
+                    this.employeeService.removeEmployee(employee_id).subscribe(
                       () => {
                         this.getEmployees(this.search_event_log);
                       },
-                      err => console.log(err.error.error.code + ': ' + err.error.error.message)
+                      err =>
+                        console.log(
+                          err.error.error.code + ': ' + err.error.error.message
+                        )
                     );
                   },
-                  err => console.log(err.error.error.code + ': ' + err.error.error.message)
+                  err =>
+                    console.log(
+                      err.error.error.code + ': ' + err.error.error.message
+                    )
                 );
             },
-            err => console.log(err.error.error.code + ': ' + err.error.error.message)
+            err =>
+              console.log(err.error.error.code + ': ' + err.error.error.message)
           );
         } else {
           this.faceApi
@@ -141,14 +148,20 @@ export class EmployeeDirectoryComponent implements OnInit {
             )
             .subscribe(
               () => {
-                this.dataService.removeEmployee(employee_id).subscribe(
+                this.employeeService.removeEmployee(employee_id).subscribe(
                   () => {
                     this.getEmployees(this.search_event_log);
                   },
-                  err => console.log(err.error.error.code + ': ' + err.error.error.message)
+                  err =>
+                    console.log(
+                      err.error.error.code + ': ' + err.error.error.message
+                    )
                 );
               },
-              err => console.log(err.error.error.code + ': ' + err.error.error.message)
+              err =>
+                console.log(
+                  err.error.error.code + ': ' + err.error.error.message
+                )
             );
         }
       },
@@ -165,7 +178,7 @@ export class EmployeeDirectoryComponent implements OnInit {
           const limit: string = this.paginator.pageSize
             ? this.paginator.pageSize.toString()
             : employee_directory_params.employeeDirectoryDefaultPageSize;
-          return this.dataSource.getEmployees(
+          return this.employeeService.getEmployees(
             this.sort.active,
             this.sort.direction,
             this.paginator.pageIndex.toString(),
@@ -184,6 +197,10 @@ export class EmployeeDirectoryComponent implements OnInit {
           return observableOf([]);
         })
       )
-      .subscribe(data => (this.data = data), err => console.log(err.error.error.code + ': ' + err.error.error.message));
+      .subscribe(
+        data => (this.data = data),
+        err =>
+          console.log(err.error.error.code + ': ' + err.error.error.message)
+      );
   }
 }

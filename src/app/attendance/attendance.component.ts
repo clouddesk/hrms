@@ -5,9 +5,11 @@ import {
   ElementRef,
   OnDestroy
 } from '@angular/core';
-import { DataService } from '../_services/data.service';
 import { MsFaceApiService } from '../_services/ms-face-api.service';
 import { MatSnackBar } from '@angular/material';
+import { EmployeeService } from '../_services/employee.service';
+import { FileService } from '../_services/file.service';
+import { AttendanceService } from '../_services/attendance.service';
 
 @Component({
   selector: 'app-attendance',
@@ -38,7 +40,9 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private dataService: DataService,
+    private attendanceService: AttendanceService,
+    private employeeService: EmployeeService,
+    private fileService: FileService,
     private faceApi: MsFaceApiService,
     public snackBar: MatSnackBar
   ) {}
@@ -67,7 +71,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       );
     } else {
       const employee_id = +this.employeeId.nativeElement.value;
-      await this.dataService.getEmployee(employee_id).subscribe(
+      await this.employeeService.getEmployee(employee_id).subscribe(
         employee => {
           this.startCamera();
           this.showCameraPreview = !this.showCameraPreview;
@@ -81,7 +85,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
             this.showCameraPreview = !this.showCameraPreview;
 
             // Create Blob data
-            const blob = this.dataService.createBlob(
+            const blob = this.fileService.createBlob(
               this.captureData.replace('data:image/png;base64,', ''),
               'image/png'
             );
@@ -161,7 +165,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
-            this.dataService
+            this.attendanceService
               .createEvent(1, position, employeeId, projectId)
               .subscribe();
           },
@@ -190,7 +194,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
-            this.dataService
+            this.attendanceService
               .createEvent(2, position, employeeId, projectId)
               .subscribe();
           },
