@@ -11,8 +11,8 @@ import { AuthService } from './_services/auth.service';
 import { AuthGuard, SignUpGuard } from './_services/auth-guard.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { MsFaceApiService } from './_services/ms-face-api.service';
-import { GoogleMapsApiService } from './_services/google-maps-api.service';
+import { FaceApiService } from './_services/face.service';
+import { MapService } from './_services/map.service';
 
 import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
 import { EmployeesComponent } from './employees/employees.component';
@@ -62,6 +62,7 @@ import { ProjectService } from './_services/project.service';
 import { ReportService } from './_services/report.service';
 import { SysObjectService } from './_services/sys-object.service';
 import { UserService } from './_services/user.service';
+import { CheckinImageComponent } from './admin/reports/attendance-report/checkin-image/checkin-image.component';
 
 @NgModule({
   entryComponents: [
@@ -105,7 +106,8 @@ import { UserService } from './_services/user.service';
     GroupDirectoryComponent,
     SysobjectComponent,
     SysobjectDirectoryComponent,
-    AttendanceSummaryReportComponent
+    AttendanceSummaryReportComponent,
+    CheckinImageComponent
   ],
   imports: [
     BrowserModule,
@@ -133,8 +135,8 @@ import { UserService } from './_services/user.service';
     AuthGuard,
     SignUpGuard,
     MenuService,
-    MsFaceApiService,
-    GoogleMapsApiService
+    FaceApiService,
+    MapService
   ],
   bootstrap: [AppComponent]
 })

@@ -23,7 +23,7 @@ export class ProjectService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   addProject(newProject: any): Observable<any> {
-    const url = environment.DatabaseAPI_Project;
+    const url = environment.API_Project;
     const data = {
       name: newProject.projectName,
       locationId: newProject.locationId
@@ -32,14 +32,14 @@ export class ProjectService {
   }
 
   editProject(projectId: number, newProject: any): Observable<any> {
-    const url = environment.DatabaseAPI_Project + projectId;
+    const url = environment.API_Project + projectId;
     return this.http.post(url, newProject, {
       headers: this.getHeader()
     });
   }
 
   removeProject(projectId: number): Observable<any> {
-    const url = environment.DatabaseAPI_Project + projectId;
+    const url = environment.API_Project + projectId;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
@@ -47,7 +47,7 @@ export class ProjectService {
 
   getProject(projectId: number): Observable<any> {
     if (projectId) {
-      const url = environment.DatabaseAPI_Project + projectId;
+      const url = environment.API_Project + projectId;
       return this.http.get(url, {
         headers: this.getHeader()
       });
@@ -55,7 +55,7 @@ export class ProjectService {
   }
 
   getProjects(): Observable<any> {
-    const url = environment.DatabaseAPI_Project;
+    const url = environment.API_Project;
     return this.http.get(url, { headers: this.getHeader() });
   }
 

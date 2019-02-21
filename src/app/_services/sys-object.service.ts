@@ -23,7 +23,7 @@ export class SysObjectService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   addNewSysObject(sysObject: any): Observable<any> {
-    return this.http.post(environment.DatabaseAPI_sysObjects, sysObject, {
+    return this.http.post(environment.API_sysObjects, sysObject, {
       headers: this.getHeader()
     });
   }
@@ -32,7 +32,7 @@ export class SysObjectService {
     const httpOptions = {
       headers: this.getHeader().append('getallsysobjects', 'yes')
     };
-    return this.http.get(environment.DatabaseAPI_sysObjects, httpOptions);
+    return this.http.get(environment.API_sysObjects, httpOptions);
   }
 
   getSysObjects(
@@ -51,18 +51,18 @@ export class SysObjectService {
         .append('limit', limit)
         .append('term', term)
     };
-    return this.http.get(environment.DatabaseAPI_sysObjects, httpOptions);
+    return this.http.get(environment.API_sysObjects, httpOptions);
   }
 
   editSysObject(sysObjectId: number, newSysObject: any): Observable<any> {
-    const url = environment.DatabaseAPI_sysObjects + sysObjectId;
+    const url = environment.API_sysObjects + sysObjectId;
     return this.http.post(url, newSysObject, {
       headers: this.getHeader()
     });
   }
 
   removeSysObject(sysObjectId: number): Observable<any> {
-    return this.http.delete(environment.DatabaseAPI_sysObjects + sysObjectId, {
+    return this.http.delete(environment.API_sysObjects + sysObjectId, {
       headers: this.getHeader()
     });
   }

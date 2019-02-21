@@ -38,23 +38,23 @@ export class EmployeeService {
         .append('limit', limit)
         .append('term', term)
     };
-    return this.http.get(environment.DatabaseAPI_Employee, httpOptions);
+    return this.http.get(environment.API_Employee, httpOptions);
   }
 
   getEmployee(employeeId): Observable<any> {
-    const url = environment.DatabaseAPI_Employee + employeeId;
+    const url = environment.API_Employee + employeeId;
     return this.http.get(url, { headers: this.getHeader() });
   }
 
   addNewEmployee(employee: any): Observable<any> {
-    const url = environment.DatabaseAPI_Employee;
+    const url = environment.API_Employee;
     return this.http.post(url, employee, {
       headers: this.getHeader()
     });
   }
 
   addPersonIdToEmployee(employeeId: number, personId: string): Observable<any> {
-    const url = environment.DatabaseAPI_Employee_addPersonId + employeeId;
+    const url = environment.API_Employee_addPersonId + employeeId;
     return this.http.post(
       url,
       { personId: personId },
@@ -68,7 +68,7 @@ export class EmployeeService {
     employeeId: number,
     personGroupId: number
   ): Observable<any> {
-    const url = environment.DatabaseAPI_Employee_addPersonGroupId + employeeId;
+    const url = environment.API_Employee_addPersonGroupId + employeeId;
     return this.http.post(
       url,
       { personGroupId: personGroupId },
@@ -83,7 +83,7 @@ export class EmployeeService {
     persistedFaceId: string
   ): Observable<any> {
     const url =
-      environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
+      environment.API_Employee_addPersistedFaceId + employeeId;
     return this.http.post(
       url,
       { persistedFaceId: persistedFaceId },
@@ -95,21 +95,21 @@ export class EmployeeService {
 
   removePersistedFaceIdFromEmployee(employeeId: number): Observable<any> {
     const url =
-      environment.DatabaseAPI_Employee_addPersistedFaceId + employeeId;
+      environment.API_Employee_addPersistedFaceId + employeeId;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
   }
 
   editEmployee(employeeId: number, newEmployee: any): Observable<any> {
-    const url = environment.DatabaseAPI_Employee + employeeId;
+    const url = environment.API_Employee + employeeId;
     return this.http.post(url, newEmployee, {
       headers: this.getHeader()
     });
   }
 
   linkPhotoWithPerson(employee_id: number, file_id: string): Observable<any> {
-    const url = environment.DatabaseAPI_Employee_linkPhoto + employee_id;
+    const url = environment.API_Employee_linkPhoto + employee_id;
     return this.http.post(
       url,
       { file_id: file_id },
@@ -120,14 +120,14 @@ export class EmployeeService {
   }
 
   unlinkPhotoFromPerson(employee_id: number): Observable<any> {
-    const url = environment.DatabaseAPI_Employee_unLinkPhoto + employee_id;
+    const url = environment.API_Employee_unLinkPhoto + employee_id;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
   }
 
   removeEmployee(employeeId: number): Observable<any> {
-    const url = environment.DatabaseAPI_Employee + employeeId;
+    const url = environment.API_Employee + employeeId;
     return this.http.delete(url, {
       headers: this.getHeader()
     });

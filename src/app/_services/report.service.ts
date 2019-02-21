@@ -28,7 +28,7 @@ export class ReportService {
       toDate: toDate,
       projectId: projectId
     };
-    const url = environment.DatabaseAPI_report + 'attendance';
+    const url = environment.API_report + 'attendance';
     return this.http.post(url, data, {
       headers: this.getHeader()
     });
@@ -41,7 +41,7 @@ export class ReportService {
       .append('toDate', toDate)
       .append('projectId', projectId.toString())
     };
-    const url = environment.DatabaseAPI_report + 'attendance/summary';
+    const url = environment.API_report + 'attendance/summary';
     return this.http.get(url, httpOptions);
   }
 

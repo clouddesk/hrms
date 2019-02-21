@@ -28,7 +28,7 @@ export class AttendanceService {
     employeeId: number,
     projectId: number
   ): Observable<any> {
-    const url = environment.DatabaseAPI_attendance;
+    const url = environment.API_attendance;
     const data = {
       eventTypeId: eventTypeId,
       projectId: projectId,
@@ -39,5 +39,24 @@ export class AttendanceService {
       employeeId: employeeId
     };
     return this.http.post(url, data, { headers: this.getHeader() });
+  }
+
+  linkPhotoWithAttendance(attendance_id: number, file_id: string): Observable<any> {
+    const url = environment.API_attendance_linkPhoto + attendance_id;
+    return this.http.post(
+      url,
+      { file_id: file_id },
+      {
+        headers: this.getHeader()
+      }
+    );
+  }
+
+
+  unlinkPhotoFromAttendance(attendance_id: number): Observable<any> {
+    const url = environment.API_attendance_unLinkPhoto + attendance_id;
+    return this.http.delete(url, {
+      headers: this.getHeader()
+    });
   }
 }

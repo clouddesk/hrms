@@ -12,7 +12,7 @@ import {
 } from 'rxjs/operators';
 import { Employee } from 'src/app/models/employee';
 import { AuthService } from 'src/app/_services/auth.service';
-import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
+import { FaceApiService } from 'src/app/_services/face.service';
 import { employee_directory_params } from '../../../environments/environment';
 import { EmployeeService } from 'src/app/_services/employee.service';
 import { FileService } from 'src/app/_services/file.service';
@@ -47,7 +47,7 @@ export class EmployeeDirectoryComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private faceApi: MsFaceApiService,
+    private faceApi: FaceApiService,
     private employeeService: EmployeeService,
     private fileService: FileService,
     private authService: AuthService,

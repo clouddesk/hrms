@@ -27,7 +27,7 @@ export class PermissionService {
       headers: this.getHeader().append('getallpermissions', 'yes')
     };
     return this.http.get(
-      environment.DatabaseAPI_permissions_group + groupId,
+      environment.API_permissions_group + groupId,
       httpOptions
     );
   }
@@ -37,12 +37,12 @@ export class PermissionService {
       headers: this.getHeader(),
       params: new HttpParams().append('term', term)
     };
-    const url = environment.DatabaseAPI_permissions_group + groupId;
+    const url = environment.API_permissions_group + groupId;
     return this.http.get(url, httpOptions);
   }
 
   addPermission(groupId: number, newPermission: any): Observable<any> {
-    const url = environment.DatabaseAPI_permissions_group + groupId;
+    const url = environment.API_permissions_group + groupId;
     return this.http.post(url, newPermission, { headers: this.getHeader() });
   }
 
@@ -58,7 +58,7 @@ export class PermissionService {
         .append('permission', permission)
     };
     return this.http.delete(
-      environment.DatabaseAPI_permissions_group + groupId,
+      environment.API_permissions_group + groupId,
       httpOptions
     );
   }

@@ -38,24 +38,24 @@ export class UserService {
         .append('limit', limit)
         .append('term', term)
     };
-    return this.http.get(environment.DatabaseAPI_users, httpOptions);
+    return this.http.get(environment.API_users, httpOptions);
   }
 
   addNewUser(user: any): Observable<any> {
-    return this.http.post(environment.DatabaseAPI_users, user, {
+    return this.http.post(environment.API_users, user, {
       headers: this.getHeader()
     });
   }
 
   editUser(userId: number, newUser: any): Observable<any> {
-    const url = environment.DatabaseAPI_users + userId;
+    const url = environment.API_users + userId;
     return this.http.post(url, newUser, {
       headers: this.getHeader()
     });
   }
 
   removeUser(userId: number): Observable<any> {
-    return this.http.delete(environment.DatabaseAPI_users + userId, {
+    return this.http.delete(environment.API_users + userId, {
       headers: this.getHeader()
     });
   }

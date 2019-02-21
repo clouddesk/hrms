@@ -10,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { Employee } from 'src/app/models/employee';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MsFaceApiService } from 'src/app/_services/ms-face-api.service';
+import { FaceApiService } from 'src/app/_services/face.service';
 import { EmployeeService } from 'src/app/_services/employee.service';
 import { FileService } from 'src/app/_services/file.service';
 import { ProjectService } from 'src/app/_services/project.service';
@@ -44,7 +44,7 @@ export class EmployeeComponent implements OnInit {
     private employeeService: EmployeeService,
     private fileService: FileService,
     private projectService: ProjectService,
-    private faceApi: MsFaceApiService,
+    private faceApi: FaceApiService,
     public dialogRef: MatDialogRef<EmployeeComponent>,
     @Inject(MAT_DIALOG_DATA) public employee: any
   ) {}
@@ -309,7 +309,7 @@ export class EmployeeComponent implements OnInit {
         const formData = await new FormData();
         await formData.append('file', blob);
 
-        this.faceApi.addFaceToPerson(blob, personGroupId, personId).subscribe(
+        this.faceApi.addFaceToPerson(formData, personGroupId, personId).subscribe(
           resultOfaddFaceToPerson => {
             this.fileService.uploadFile(formData).subscribe(file_id => {
               this.employeeService

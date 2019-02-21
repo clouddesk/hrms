@@ -23,7 +23,7 @@ export class GroupService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   addNewGroup(group: any): Observable<any> {
-    return this.http.post(environment.DatabaseAPI_groups, group, {
+    return this.http.post(environment.API_groups, group, {
       headers: this.getHeader()
     });
   }
@@ -32,7 +32,7 @@ export class GroupService {
     const httpOptions = {
       headers: this.getHeader().append('getallgroups', 'yes')
     };
-    return this.http.get(environment.DatabaseAPI_groups, httpOptions);
+    return this.http.get(environment.API_groups, httpOptions);
   }
 
   getGroups(
@@ -51,18 +51,18 @@ export class GroupService {
         .append('limit', limit)
         .append('term', term)
     };
-    return this.http.get(environment.DatabaseAPI_groups, httpOptions);
+    return this.http.get(environment.API_groups, httpOptions);
   }
 
   editGroup(groupId: number, newGroup: any): Observable<any> {
-    const url = environment.DatabaseAPI_groups + groupId;
+    const url = environment.API_groups + groupId;
     return this.http.post(url, newGroup, {
       headers: this.getHeader()
     });
   }
 
   removeGroup(groupId: number): Observable<any> {
-    return this.http.delete(environment.DatabaseAPI_groups + groupId, {
+    return this.http.delete(environment.API_groups + groupId, {
       headers: this.getHeader()
     });
   }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
@@ -23,13 +23,13 @@ export class FileService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   getFiles(): Observable<any> {
-    const url = environment.DatabaseAPI_files;
+    const url = environment.API_files;
     return this.http.get(url, { headers: this.getHeader() });
   }
 
   getFile(file_id: number): Observable<any> {
     if (file_id) {
-      const url = environment.DatabaseAPI_files + file_id;
+      const url = environment.API_files + file_id;
       return this.http.get(url, {
         headers: this.getHeader(),
         responseType: 'blob' as 'json'
@@ -38,12 +38,12 @@ export class FileService {
   }
 
   uploadFile(file): Observable<any> {
-    const url = environment.DatabaseAPI_files;
+    const url = environment.API_files;
     return this.http.post(url, file, { headers: this.getHeader() });
   }
 
   deleteFile(index: number): Observable<any> {
-    const url = environment.DatabaseAPI_files + index;
+    const url = environment.API_files + index;
     return this.http.delete(url, {
       headers: this.getHeader()
     });

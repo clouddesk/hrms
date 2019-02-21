@@ -25,7 +25,7 @@ export class AuthService {
 
   loginUser(email: string, password: string) {
     return this.http
-      .post(environment.DatabaseAPI_auth, { email, password })
+      .post(environment.API_auth, { email, password })
       .toPromise()
       .then(token => {
         this.token = token.toString();
@@ -55,7 +55,7 @@ export class AuthService {
     companyId
   ) {
     return this.http
-      .post(environment.DatabaseAPI_users, {
+      .post(environment.API_users, {
         firstName,
         lastName,
         email,

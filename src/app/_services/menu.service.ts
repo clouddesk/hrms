@@ -31,14 +31,14 @@ export class MenuService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   getMenu(): Observable<any> {
-    const url = environment.DatabaseAPI_menu;
+    const url = environment.API_menu;
     return this.http.get(url, {
       headers: this.getHeader()
     });
   }
 
   addNewMenuItem(newMenuItem: MenuItem): Observable<any> {
-    const url = environment.DatabaseAPI_menu;
+    const url = environment.API_menu;
     return this.http.post(url, newMenuItem, {
       headers: this.getHeader()
     });

@@ -100,6 +100,7 @@ Generate Report
             *ngIf="location == expandedElement"
           >
             <app-location-map [position]="location.position"></app-location-map>
+            <app-checkin-image [file_id]="location.capturedPhotoFileId"></app-checkin-image>
           </div>
         </div>
       </td>

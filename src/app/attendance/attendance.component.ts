@@ -5,7 +5,7 @@ import {
   ElementRef,
   OnDestroy
 } from '@angular/core';
-import { MsFaceApiService } from '../_services/ms-face-api.service';
+import { FaceApiService } from '../_services/face.service';
 import { MatSnackBar } from '@angular/material';
 import { EmployeeService } from '../_services/employee.service';
 import { FileService } from '../_services/file.service';
@@ -43,7 +43,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     private attendanceService: AttendanceService,
     private employeeService: EmployeeService,
     private fileService: FileService,
-    private faceApi: MsFaceApiService,
+    private faceApi: FaceApiService,
     public snackBar: MatSnackBar
   ) {}
 
@@ -57,7 +57,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   openSnackBar(message: string) {
     this.snackBar.open(message, '', {
-      duration: 5000
+      duration: 5000,
+      verticalPosition: 'top'
     });
   }
 
@@ -89,12 +90,14 @@ export class AttendanceComponent implements OnInit, OnDestroy {
               this.captureData.replace('data:image/png;base64,', ''),
               'image/png'
             );
+            const formData = new FormData();
+            formData.append('file', blob);
 
             // Push to server
-            this.faceApi.detectPerson(blob).subscribe(
+            this.faceApi.detectPerson(formData).subscribe(
               detected_person => {
-                if (detected_person.length > 0) {
-                  const faceId = detected_person[0].faceId;
+                if (detected_person) {
+                  const faceId = detected_person;
                   this.faceApi
                     .verifyPerson(
                       faceId,
@@ -109,8 +112,16 @@ export class AttendanceComponent implements OnInit, OnDestroy {
                           // verification_result.confidence >= 0.8
                         ) {
                           action === 'Check-In'
-                            ? this.welcome(employee_id, +employee.projectId)
-                            : this.goodbye(employee_id, +employee.projectId);
+                            ? this.checkInEmployee(
+                                employee_id,
+                                +employee.projectId,
+                                formData
+                              )
+                            : this.checkOutEmployee(
+                                employee_id,
+                                +employee.projectId,
+                                formData
+                              );
                         } else {
                           this.openSnackBar(
                             employee.firstName +
@@ -148,61 +159,83 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }
   }
 
-  welcome(employeeId: number, projectId: number) {
-    this.showWelcome = true;
-    this.showInput = false;
-    setTimeout(() => {
-      this.showWelcome = false;
-      this.showInput = true;
-
-      // Geolocation API
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      };
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            this.attendanceService
-              .createEvent(1, position, employeeId, projectId)
-              .subscribe();
-          },
-          err => console.log(err),
-          options
-        );
-      }
-    }, 3000);
+  checkInEmployee(employeeId: number, projectId: number, formData: FormData) {
+    // Geolocation API
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.showInput = false;
+          this.attendanceService
+            .createEvent(1, position, employeeId, projectId)
+            .subscribe(
+              attendance_data => {
+                this.fileService.uploadFile(formData).subscribe(file_id => {
+                  this.attendanceService
+                    .linkPhotoWithAttendance(attendance_data.id, file_id)
+                    .subscribe(() => {
+                      this.showWelcome = true;
+                      setTimeout(() => {
+                        this.showWelcome = false;
+                        this.showInput = true;
+                      }, 1000);
+                    });
+                });
+              },
+              error => {
+                this.showInput = true;
+                this.openSnackBar(error.error);
+              }
+            );
+        },
+        err => console.log(err),
+        options
+      );
+    }
   }
 
-  goodbye(employeeId: number, projectId: number) {
-    this.showGoodbye = true;
-    this.showInput = false;
+  checkOutEmployee(employeeId: number, projectId: number, formData: FormData) {
+    // Geolocation API
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
 
-    setTimeout(() => {
-      this.showGoodbye = false;
-      this.showInput = true;
-
-      // Geolocation API
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      };
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            this.attendanceService
-              .createEvent(2, position, employeeId, projectId)
-              .subscribe();
-          },
-          err => console.log(err),
-          options
-        );
-      }
-    }, 3000);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.showInput = false;
+          this.attendanceService
+            .createEvent(2, position, employeeId, projectId)
+            .subscribe(
+              attendance_data => {
+                this.fileService.uploadFile(formData).subscribe(file_id => {
+                  this.attendanceService
+                    .linkPhotoWithAttendance(attendance_data.id, file_id)
+                    .subscribe(() => {
+                      this.showGoodbye = true;
+                      setTimeout(() => {
+                        this.showGoodbye = false;
+                        this.showInput = true;
+                      }, 1000);
+                    });
+                });
+              },
+              error => {
+                this.showInput = true;
+                this.openSnackBar(error.error);
+              }
+            );
+        },
+        err => console.log(err),
+        options
+      );
+    }
   }
 
   private startCamera() {

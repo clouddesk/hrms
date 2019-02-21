@@ -23,7 +23,7 @@ export class LocationService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   addLocation(newLocation: any): Observable<any> {
-    const url = environment.DatabaseAPI_Location;
+    const url = environment.API_Location;
     const data = {
       name: newLocation.locationName,
       address: newLocation.locationAddress,
@@ -33,7 +33,7 @@ export class LocationService {
   }
 
   removeLocation(locationId: number): Observable<any> {
-    const url = environment.DatabaseAPI_Location + locationId;
+    const url = environment.API_Location + locationId;
     return this.http.delete(url, {
       headers: this.getHeader()
     });
@@ -41,7 +41,7 @@ export class LocationService {
 
   getLocation(locationId: number): Observable<any> {
     if (locationId) {
-      const url = environment.DatabaseAPI_Location + locationId;
+      const url = environment.API_Location + locationId;
       return this.http.get(url, {
         headers: this.getHeader()
       });
@@ -49,7 +49,7 @@ export class LocationService {
   }
 
   getLocations(): Observable<any> {
-    const url = environment.DatabaseAPI_Location;
+    const url = environment.API_Location;
     return this.http.get(url, { headers: this.getHeader() });
   }
 }

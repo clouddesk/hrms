@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GoogleMapsApiService } from 'src/app/_services/google-maps-api.service';
+import { MapService } from 'src/app/_services/map.service';
+import { FileService } from 'src/app/_services/file.service';
 
 @Component({
   selector: 'app-location-map',
@@ -7,14 +8,14 @@ import { GoogleMapsApiService } from 'src/app/_services/google-maps-api.service'
   styleUrls: ['./location-map.component.scss']
 })
 export class LocationMapComponent implements OnInit {
-  MapImageBlobUrl = null;
+  mapImageBlobURL = null;
 
   @Input() position;
 
-  constructor(private mapAPI: GoogleMapsApiService) {}
+  constructor(private mapAPI: MapService, private fileService: FileService) {}
 
   ngOnInit() {
-    this.getLocationMap(this.position);
+    this.getLocationMap();
   }
 
   createImageFromBlob(image: Blob) {
@@ -22,7 +23,7 @@ export class LocationMapComponent implements OnInit {
     reader.addEventListener(
       'load',
       () => {
-        this.MapImageBlobUrl = reader.result;
+        this.mapImageBlobURL = reader.result;
       },
       false
     );
@@ -30,15 +31,15 @@ export class LocationMapComponent implements OnInit {
       reader.readAsDataURL(image);
     }
   }
-  getLocationMap(position) {
-    const point = position.coordinates;
+
+  getLocationMap() {
+    const point = this.position.coordinates;
     return this.mapAPI
       .getLocationMap(point[1].toString(), point[0].toString())
       .subscribe(
-        (blob: Blob) => {
-          if (blob.size > 27) {
-            this.createImageFromBlob(blob);
-          }
+        (data: string) => {
+          const newData = this.fileService.createBlob(data, 'image/png');
+          this.createImageFromBlob(newData);
         },
         err => console.log(err.error)
       );
