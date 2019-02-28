@@ -63,6 +63,11 @@ import { ReportService } from './_services/report.service';
 import { SysObjectService } from './_services/sys-object.service';
 import { UserService } from './_services/user.service';
 import { CheckinImageComponent } from './admin/reports/attendance-report/checkin-image/checkin-image.component';
+import { AzureComponent } from './admin/config/azure/azure.component';
+import { AzureDashboardComponent } from './admin/config/azure/azure-dashboard/azure-dashboard.component';
+import { PersonGroupDirectoryComponent } from './admin/config/azure/person-group-directory/person-group-directory.component';
+import { PersonGroupComponent } from './admin/config/azure/person-group/person-group.component';
+import { PersonDirectoryComponent } from './admin/config/azure/person-directory/person-directory.component';
 
 @NgModule({
   entryComponents: [
@@ -107,7 +112,12 @@ import { CheckinImageComponent } from './admin/reports/attendance-report/checkin
     SysobjectComponent,
     SysobjectDirectoryComponent,
     AttendanceSummaryReportComponent,
-    CheckinImageComponent
+    CheckinImageComponent,
+    AzureComponent,
+    AzureDashboardComponent,
+    PersonGroupDirectoryComponent,
+    PersonGroupComponent,
+    PersonDirectoryComponent,
   ],
   imports: [
     BrowserModule,

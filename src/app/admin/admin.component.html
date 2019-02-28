@@ -2,7 +2,7 @@
   <mat-sidenav
     #drawer
     class="sidenav"
-    fixedInViewport="true"
+    fixedInViewport="false"
     fixedTopGap="75"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -15,8 +15,7 @@
       <a mat-list-item routerLink="projects/">Projects</a>
       <a mat-list-item routerLink="locations/">Locations</a>
       <a mat-list-item routerLink="rights/">Access Management</a>
-      <!-- <a mat-list-item routerLink="rights/">Rights Management</a> -->
-      <!-- <a mat-list-item routerLink="config/">Configuration</a> -->
+      <a mat-list-item routerLink="config/">Configuration</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

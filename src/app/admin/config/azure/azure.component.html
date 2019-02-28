@@ -1,0 +1,18 @@
+<mat-toolbar color="primary">
+  <button
+    *ngIf="(isHandset$ | async)"
+    type="button"
+    aria-label="Toggle sidenav"
+    mat-icon-button
+    (click)="drawer.toggle()"
+  >
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  <button mat-button routerLink="groups">
+    <mat-icon>group</mat-icon> Person Groups
+  </button>
+  <button mat-button routerLink="groups/add">
+    <mat-icon>group_add</mat-icon> Add Person Group
+  </button>
+</mat-toolbar>
+<div class="container"><router-outlet></router-outlet></div>

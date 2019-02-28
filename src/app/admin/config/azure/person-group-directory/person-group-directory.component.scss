@@ -1,0 +1,73 @@
+.container {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+tr.personGroup-row:hover {
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+tr.detail-row {
+  height: 0;
+}
+
+tr.personGroup-row:not(.expanded-row):hover {
+  background: #f5f5f5;
+}
+
+tr.personGroup-row:not(.expanded-row):active {
+  background: #efefef;
+}
+
+.personGroup-row td {
+  border-bottom-width: 0;
+}
+
+.personGroup-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.personGroup-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.personGroup-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.personGroup-description {
+  padding: 16px;
+}
+
+.personGroup-description-attribution {
+  opacity: 0.5;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

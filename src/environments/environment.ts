@@ -13,6 +13,14 @@ export const sysobject_directory_params = {
   sysObjectDirectoryDefaultPageSize: '25'
 };
 
+export const persongroup_directory_params = {
+  personGroupDirectoryDefaultPageSize: '25'
+};
+
+export const person_directory_params = {
+  personDirectoryDefaultPageSize: '25'
+};
+
 export const user_directory_params = {
   userDirectoryDefaultPageSize: '25'
 };
@@ -26,7 +34,7 @@ export const permission_directory_params = {
 };
 
 export const environment = {
-  production: true,
+  production: false,
 
   API_auth: `${DBAPI}/auth`,
   API_users: `${DBAPI}/users/`,
@@ -41,7 +49,7 @@ export const environment = {
   API_map: `${DBAPI}/maps/`,
   API_face_persongroups: `${DBAPI}/face/persongroups/`,
   API_face_persongroupsperson: `${DBAPI}/face/persongroupsperson/`,
-  API_face_persistedface: `${DBAPI}/face/persistedface`,
+  API_face_persistedface: `${DBAPI}/face/persistedface/`,
   API_face_detectperson: `${DBAPI}/face/detectperson`,
   API_face_verifyperson: `${DBAPI}/face/verifyperson`,
   API_Employee: `${DBAPI}/employees/`,

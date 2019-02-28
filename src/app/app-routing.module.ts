@@ -30,6 +30,11 @@ import { PermissionComponent } from './admin/rights-management/permission/permis
 import { SysobjectComponent } from './admin/rights-management/sysobject/sysobject.component';
 import { SysobjectDirectoryComponent } from './admin/rights-management/sysobject-directory/sysobject-directory.component';
 import { AttendanceSummaryReportComponent } from './admin/reports/attendance-summary-report/attendance-summary-report.component';
+import { AzureComponent } from './admin/config/azure/azure.component';
+import { AzureDashboardComponent } from './admin/config/azure/azure-dashboard/azure-dashboard.component';
+import { PersonGroupDirectoryComponent } from './admin/config/azure/person-group-directory/person-group-directory.component';
+import { PersonGroupComponent } from './admin/config/azure/person-group/person-group.component';
+import { PersonDirectoryComponent } from './admin/config/azure/person-directory/person-directory.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -55,6 +60,28 @@ const routes: Routes = [
               { path: 'add', component: MenuItemComponent },
               { path: 'edit', component: MenuItemComponent }
             ]
+          },
+          {
+            path: 'azure',
+            component: AzureComponent,
+            children: [
+              {
+                path: 'groups',
+                children: [
+                  { path: 'add', component: PersonGroupComponent },
+                  {
+                    path: 'person/:id',
+                    component: PersonDirectoryComponent
+                  },
+                  { path: '', component: PersonGroupDirectoryComponent }
+                ]
+              },
+              { path: '', component: AzureDashboardComponent }
+            ]
+          },
+          {
+            path: 'company',
+            component: CompanyComponent
           }
         ]
       },
@@ -96,10 +123,6 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'company',
-        component: CompanyComponent
-      },
-      {
         path: 'reports',
         component: ReportsComponent,
         children: [
@@ -110,7 +133,7 @@ const routes: Routes = [
           {
             path: 'attendance',
             component: AttendanceReportComponent
-          },
+          }
         ]
       },
       {

@@ -24,6 +24,7 @@ export class LocationMapComponent implements OnInit {
       'load',
       () => {
         this.mapImageBlobURL = reader.result;
+        console.log(this.mapImageBlobURL);
       },
       false
     );

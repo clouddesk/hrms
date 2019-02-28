@@ -10,7 +10,6 @@ import {
   distinctUntilChanged
 } from 'rxjs/operators';
 
-import { AuthService } from 'src/app/_services/auth.service';
 import { sysobject_directory_params } from '../../../../environments/environment';
 import { SysObjectService } from 'src/app/_services/sys-object.service';
 

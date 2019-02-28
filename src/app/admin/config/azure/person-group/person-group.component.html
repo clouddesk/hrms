@@ -1,0 +1,24 @@
+<h3>Enter details for new Person Group:</h3>
+<div fxLayout="column" class="container">
+  <div fxFlex="100" fxFlexAlign="center"><!--  --></div>
+  <form [formGroup]="personGroupForm" (ngSubmit)="onSubmit()">
+    <div>
+      <mat-form-field>
+        <mat-hint>PersonGroup ID</mat-hint>
+        <input formControlName="inputPersonGroupId" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-hint>PersonGroup Name</mat-hint>
+        <input formControlName="inputPersonGroupName" matInput />
+        <mat-icon matSuffix>title</mat-icon>
+      </mat-form-field>
+      <br />
+    </div>
+    <br />
+    <button mat-raised-button type="submit">Submit</button>
+    <br>
+    <br>
+  </form>
+</div>

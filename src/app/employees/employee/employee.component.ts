@@ -44,7 +44,7 @@ export class EmployeeComponent implements OnInit {
     private employeeService: EmployeeService,
     private fileService: FileService,
     private projectService: ProjectService,
-    private faceApi: FaceApiService,
+    private faceApiService: FaceApiService,
     public dialogRef: MatDialogRef<EmployeeComponent>,
     @Inject(MAT_DIALOG_DATA) public employee: any
   ) {}
@@ -115,7 +115,7 @@ export class EmployeeComponent implements OnInit {
     } else {
       this.employeeService.addNewEmployee(changedEmployee).subscribe(
         employee => {
-          this.faceApi
+          this.faceApiService
             .addPersonToPersonGroup(
               employee.personGroupId,
               employee.firstName + ' ' + employee.lastName
@@ -156,7 +156,7 @@ export class EmployeeComponent implements OnInit {
     if (this.employee.employeePhotoFileId) {
       this.fileService.deleteFile(this.employee.employeePhotoFileId).subscribe(
         () => {
-          this.faceApi
+          this.faceApiService
             .deletePersonFromPersonGroup(
               this.employee.personGroupId,
               this.employee.personId
@@ -188,7 +188,7 @@ export class EmployeeComponent implements OnInit {
         }
       );
     } else {
-      this.faceApi
+      this.faceApiService
         .deletePersonFromPersonGroup(
           this.employee.personGroupId,
           this.employee.personId
@@ -309,43 +309,47 @@ export class EmployeeComponent implements OnInit {
         const formData = await new FormData();
         await formData.append('file', blob);
 
-        this.faceApi.addFaceToPerson(formData, personGroupId, personId).subscribe(
-          resultOfaddFaceToPerson => {
-            this.fileService.uploadFile(formData).subscribe(file_id => {
-              this.employeeService
-                .linkPhotoWithPerson(employee_id, file_id)
-                .subscribe(() => {
-                  this.employeeService
-                    .addPersistedFaceIdtoEmployee(
-                      employee_id,
-                      resultOfaddFaceToPerson.persistedFaceId
-                    )
-                    .subscribe(() => {
-                      if (employeePhotoFileId) {
-                        this.fileService
-                          .deleteFile(employeePhotoFileId)
-                          .subscribe();
-                      }
-                      if (persistedFaceId) {
-                        this.faceApi
-                          .deleteFaceOfAPerson(
-                            personGroupId,
-                            personId,
-                            persistedFaceId
-                          )
-                          .subscribe();
-                      }
-                      this.getEmployeePhoto(employee_id);
-                      this.isLoading = false;
-                    });
-                });
-            });
-          },
-          err => {
-            console.log(err.error.error.code + ': ' + err.error.error.message);
-            this.isLoading = false;
-          }
-        );
+        this.faceApiService
+          .addFaceToPerson(formData, personGroupId, personId)
+          .subscribe(
+            resultOfaddFaceToPerson => {
+              this.fileService.uploadFile(formData).subscribe(file_id => {
+                this.employeeService
+                  .linkPhotoWithPerson(employee_id, file_id)
+                  .subscribe(() => {
+                    this.employeeService
+                      .addPersistedFaceIdtoEmployee(
+                        employee_id,
+                        resultOfaddFaceToPerson.persistedFaceId
+                      )
+                      .subscribe(() => {
+                        if (employeePhotoFileId) {
+                          this.fileService
+                            .deleteFile(employeePhotoFileId)
+                            .subscribe();
+                        }
+                        if (persistedFaceId) {
+                          this.faceApiService
+                            .deleteFaceOfAPerson(
+                              personGroupId,
+                              personId,
+                              persistedFaceId
+                            )
+                            .subscribe();
+                        }
+                        this.getEmployeePhoto(employee_id);
+                        this.isLoading = false;
+                      });
+                  });
+              });
+            },
+            err => {
+              console.log(
+                err.error.error.code + ': ' + err.error.error.message
+              );
+              this.isLoading = false;
+            }
+          );
       }
     }
   }

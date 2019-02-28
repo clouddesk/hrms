@@ -21,13 +21,10 @@ export class FaceApiService {
     }
   }
 
-  public createPersonGroup(
-    personGroupId: string,
-    personGroupName: string
-  ): Observable<any> {
-    return this.http.put(
+  public createPersonGroup(personGroup): Observable<any> {
+    return this.http.post(
       environment.API_face_persongroups,
-      { personGroupName: personGroupName, personGroupId: personGroupId },
+      personGroup,
       {
         headers: this.getHeader()
       }
@@ -35,13 +32,9 @@ export class FaceApiService {
   }
 
   public detectPerson(blob: FormData): Observable<any> {
-    return this.http.post(
-      environment.API_face_detectperson,
-      blob,
-      {
-        headers: this.getHeader()
-      }
-    );
+    return this.http.post(environment.API_face_detectperson, blob, {
+      headers: this.getHeader()
+    });
   }
 
   public verifyPerson(
@@ -63,8 +56,18 @@ export class FaceApiService {
   }
 
   public deletePersonGroup(personGroupId: string): Observable<any> {
-    return this.http.delete(
-      `${environment.API_face_persongroups}/${personGroupId}`,
+    return this.http.delete(environment.API_face_persongroups + personGroupId, {
+      headers: this.getHeader()
+    });
+  }
+
+  public editPersonGroup(
+    personGroupId: string,
+    personGroupName: string
+  ): Observable<any> {
+    return this.http.post(
+      environment.API_face_persongroups + personGroupId,
+      { name: personGroupName },
       { headers: this.getHeader() }
     );
   }
@@ -92,8 +95,8 @@ export class FaceApiService {
     personGroupId: string,
     personId: string
   ): Observable<any> {
-    return this.http.delete(environment.API_face_persongroupsperson, {
-      params: { personGroupId: personGroupId, personid: personId },
+    return this.http.delete(environment.API_face_persongroupsperson + personId, {
+      params: { personGroupId: personGroupId },
       headers: this.getHeader()
     });
   }
